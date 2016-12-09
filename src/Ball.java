@@ -11,8 +11,8 @@ public class Ball extends Circle{
 		@Override
 		public void run(){
 			while(true){
-				xPos+=xSpeed;
-				yPos+=ySpeed;
+				setCenterX(getCenterX+xSpeed);
+				setCenterY(getCenterY+ySpeed);
 				if(xSpeed>0)xSpeed-=0.05;
 				else if(xSpeed<0)xSpeed+=0.05;
 				if(ySpeed>0)xSpeed-=0.05;
