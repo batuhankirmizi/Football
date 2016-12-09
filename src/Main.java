@@ -33,7 +33,13 @@ public class Main extends JPanel implements KeyListener {
                 }
 
                 if(pressed.contains(KeyEvent.VK_W) && !pressed.contains(KeyEvent.VK_S))
-                    players[0].setCenterY(players[0].getCenterY() - 5);
+                    players[0].setCenterY(players[0].getCenterY() - players[0].SPEED);
+                if(!pressed.contains(KeyEvent.VK_W) && pressed.contains(KeyEvent.VK_S))
+                    players[0].setCenterY(players[0].getCenterY() - players[0].SPEED);
+                if(pressed.contains(KeyEvent.VK_A) && !pressed.contains(KeyEvent.VK_D))
+                    players[0].setCenterX(players[0].getCenterX() - players[0].SPEED);
+                if(!pressed.contains(KeyEvent.VK_A) && pressed.contains(KeyEvent.VK_D))
+                    players[0].setCenterX(players[0].getCenterX() - players[0].SPEED);
             }
         }
     });
@@ -81,7 +87,7 @@ public class Main extends JPanel implements KeyListener {
         ball.ballMover.start();
         while(true) {
             try {
-                Thread.sleep(90);
+                Thread.sleep(17);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
