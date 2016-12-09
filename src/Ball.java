@@ -38,10 +38,12 @@ public class Ball extends Circle{
 		double xdist=xPos-this.xPos;
 		double angle=Math.atan2(ydist/xdist);
 		double speed=Math.sqrt(ydist*ydist+xdist*xdist);
-          this.xSpeed+=xSpeed;
+		this.xSpeed+=xSpeed;
 		this.ySpeed+=ySpeed;
 		this.xSpeed=speed*Math.cos(angle);
 		this.ySpeed=speed*Math.sin(angle);
+		this.xSpeed+=xSpeed;	//Bu iki satırın tekrar eklenmesi top ve oyuncu arasındaki açının yanı sıra
+		this.ySpeed+=ySpeed;	//topun oyuncunun hareket yönüne doğru da hareket etmesini sağlar
 	}
 }
 
