@@ -31,7 +31,7 @@ public class Main extends JPanel implements KeyListener {
 
                 if(pressed.contains(KeyEvent.VK_W) && !pressed.contains(KeyEvent.VK_S)){
                     players[0].setCenterY(players[0].getCenterY() - players[0].SPEED);
-					players[0].xSpeed=-players[0].speed
+					players[0].xSpeed=-players[0].speed	//Player.xSpeed oyuncunun hızını hit() için göstermeye yarar
 				}
                 else if(!pressed.contains(KeyEvent.VK_W) && pressed.contains(KeyEvent.VK_S)){
                     players[0].setCenterY(players[0].getCenterY() + players[0].SPEED);
@@ -91,7 +91,7 @@ public class Main extends JPanel implements KeyListener {
         // Initialize players
         players = new Player[PLAYER_COUNT];
         players[0] = new Player("Batu", WIDTH / 3, HEIGHT / 2);
-        players[1] = new Player("Ayta�", WIDTH * 2 / 3, HEIGHT / 2);
+        players[1] = new Player("Aytaç", WIDTH * 2 / 3, HEIGHT / 2);
 
         // Initialize ball
         ball = new Ball();
@@ -118,11 +118,11 @@ public class Main extends JPanel implements KeyListener {
         ball.ballMover.start();
         while(true) {
             try {
-                Thread.sleep(17);
+                Thread.sleep(16);	// 1000ms/60fps=16.66
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
+			// hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
             if(players[0].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
                 ball.hit(players[0].getCenterX(), players[0].getCenterY(), players[0].xSpeed, players[0].ySpeed);
             else if(players[1].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
