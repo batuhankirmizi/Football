@@ -31,18 +31,22 @@ public class Main extends JPanel implements KeyListener {
                 }
 
                 if(pressed.contains(KeyEvent.VK_W) && !pressed.contains(KeyEvent.VK_S)){
-                    players[0].setCenterY(players[0].getCenterY() - players[0].SPEED);
+                    if(players[0].getCenterY() >= 0)
+                        players[0].setCenterY(players[0].getCenterY() - players[0].SPEED);
                     players[0].xSpeed = -players[0].SPEED;	//Player.xSpeed oyuncunun hızını hit() için göstermeye yarar
-                } else if(!pressed.contains(KeyEvent.VK_W) && pressed.contains(KeyEvent.VK_S)){
-                    players[0].setCenterY(players[0].getCenterY() + players[0].SPEED);
+                } else if(!pressed.contains(KeyEvent.VK_W) && pressed.contains(KeyEvent.VK_S)) {
+                    if(players[0].getCenterY() <= HEIGHT - 70)
+                        players[0].setCenterY(players[0].getCenterY() + players[0].SPEED);
                     players[0].xSpeed = players[0].SPEED;
                 } else players[0].xSpeed=0;
 
-                if(pressed.contains(KeyEvent.VK_A) && !pressed.contains(KeyEvent.VK_D)){
-                    players[0].setCenterX(players[0].getCenterX() - players[0].SPEED);
+                if(pressed.contains(KeyEvent.VK_A) && !pressed.contains(KeyEvent.VK_D)) {
+                    if(players[0].getCenterX() >= 0)
+                        players[0].setCenterX(players[0].getCenterX() - players[0].SPEED);
                     players[0].ySpeed=-players[0].SPEED;
-                } else if(!pressed.contains(KeyEvent.VK_A) && pressed.contains(KeyEvent.VK_D)){
-                    players[0].setCenterX(players[0].getCenterX() + players[0].SPEED);
+                } else if(!pressed.contains(KeyEvent.VK_A) && pressed.contains(KeyEvent.VK_D)) {
+                    if(players[0].getCenterX() <= WIDTH - 40)
+                        players[0].setCenterX(players[0].getCenterX() + players[0].SPEED);
                     players[0].ySpeed=players[0].SPEED;
                 } else players[0].ySpeed=0;
             }
@@ -59,23 +63,25 @@ public class Main extends JPanel implements KeyListener {
                     e.printStackTrace();
                 }
 
-                if(pressed.contains(KeyEvent.VK_UP) && !pressed.contains(KeyEvent.VK_DOWN)){
-                    players[1].setCenterY(players[1].getCenterY() - players[1].SPEED);
+                if(pressed.contains(KeyEvent.VK_UP) && !pressed.contains(KeyEvent.VK_DOWN)) {
+                    if(players[1].getCenterY() >= 0)
+                        players[1].setCenterY(players[1].getCenterY() - players[1].SPEED);
                     players[1].xSpeed=-players[1].SPEED;
-                }
-                else if(!pressed.contains(KeyEvent.VK_UP) && pressed.contains(KeyEvent.VK_DOWN)){
-                    players[1].setCenterY(players[1].getCenterY() + players[1].SPEED);
+                } else if(!pressed.contains(KeyEvent.VK_UP) && pressed.contains(KeyEvent.VK_DOWN)) {
+                    if(players[1].getCenterY() <= HEIGHT - 70)
+                        players[1].setCenterY(players[1].getCenterY() + players[1].SPEED);
                     players[1].xSpeed=players[1].SPEED;
-                }else players[1].xSpeed=0;
-                if(pressed.contains(KeyEvent.VK_LEFT) && !pressed.contains(KeyEvent.VK_RIGHT)){
-                    players[1].setCenterX(players[1].getCenterX() - players[1].SPEED);
-                    players[1].ySpeed=-players[1].SPEED;
-                }
-                else if(!pressed.contains(KeyEvent.VK_LEFT) && pressed.contains(KeyEvent.VK_RIGHT)){
-                    players[1].setCenterX(players[1].getCenterX() + players[1].SPEED);
-                    players[1].ySpeed=players[1].SPEED;
-                }else players[1].ySpeed=0;
+                } else players[1].xSpeed=0;
 
+                if(pressed.contains(KeyEvent.VK_LEFT) && !pressed.contains(KeyEvent.VK_RIGHT)) {
+                    if(players[1].getCenterX() >= 0)
+                        players[1].setCenterX(players[1].getCenterX() - players[1].SPEED);
+                    players[1].ySpeed=-players[1].SPEED;
+                } else if(!pressed.contains(KeyEvent.VK_LEFT) && pressed.contains(KeyEvent.VK_RIGHT)) {
+                    if(players[1].getCenterX() <= WIDTH - 40)
+                        players[1].setCenterX(players[1].getCenterX() + players[1].SPEED);
+                    players[1].ySpeed=players[1].SPEED;
+                } else players[1].ySpeed=0;
             }
         }
     });
@@ -121,6 +127,7 @@ public class Main extends JPanel implements KeyListener {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             // hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
             if(players[0].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
                 ball.hit(players[0].getCenterX(), players[0].getCenterY(), players[0].xSpeed, players[0].ySpeed);
