@@ -35,11 +35,11 @@ public class Main extends JPanel implements KeyListener {
                 if(pressed.contains(KeyEvent.VK_W) && !pressed.contains(KeyEvent.VK_S))
                     players[0].setCenterY(players[0].getCenterY() - players[0].SPEED);
                 if(!pressed.contains(KeyEvent.VK_W) && pressed.contains(KeyEvent.VK_S))
-                    players[0].setCenterY(players[0].getCenterY() - players[0].SPEED);
+                    players[0].setCenterY(players[0].getCenterY() + players[0].SPEED);
                 if(pressed.contains(KeyEvent.VK_A) && !pressed.contains(KeyEvent.VK_D))
                     players[0].setCenterX(players[0].getCenterX() - players[0].SPEED);
                 if(!pressed.contains(KeyEvent.VK_A) && pressed.contains(KeyEvent.VK_D))
-                    players[0].setCenterX(players[0].getCenterX() - players[0].SPEED);
+                    players[0].setCenterX(players[0].getCenterX() + players[0].SPEED);
             }
         }
     });
@@ -48,6 +48,23 @@ public class Main extends JPanel implements KeyListener {
         @Override
         public void run() {
             // UPDOWNRIGHTLEFT
+            while(true) {
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if(pressed.contains(KeyEvent.VK_UP) && !pressed.contains(KeyEvent.VK_DOWN))
+                    players[1].setCenterY(players[1].getCenterY() - players[1].SPEED);
+                if(pressed.contains(!KeyEvent.VK_UP) && pressed.contains(KeyEvent.VK_DOWN))
+                    players[1].setCenterY(players[1].getCenterY() + players[1].SPEED);
+                if(pressed.contains(KeyEvent.VK_LEFT) && !pressed.contains(KeyEvent.VK_RIGHT))
+                    players[1].setCenterX(players[1].getCenterX() - players[1].SPEED);
+                if(!pressed.contains(KeyEvent.VK_LEFT) && pressed.contains(KeyEvent.VK_RIGHT))
+                    players[1].setCenterX(players[1].getCenterX() + players[1].SPEED);
+                
+            }
         }
     });
 
