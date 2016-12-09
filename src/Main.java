@@ -24,7 +24,7 @@ public class Main extends JPanel implements KeyListener {
             // WASD
             while(true) {
                 try {
-                    Thread.sleep(5);
+                    Thread.sleep(8);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
