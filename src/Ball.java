@@ -3,7 +3,7 @@ package futbol;
 import javafx.scene.shape.Circle;
 import java.awt.*;
 
-public class Ball extends Circle{
+class Ball extends Circle{
     double xPos;
     double yPos;
     double xSpeed = 0;
@@ -54,10 +54,10 @@ public class Ball extends Circle{
     }
 
     void hit(double xPos,double yPos,double xSpeed,double ySpeed){
-        double ydist=yPos-this.yPos;
-        double xdist=xPos-this.xPos;
-        double angle=Math.atan2(ydist,xdist);
-        double speed=Math.sqrt(ydist*ydist+xdist*xdist);
+        double ydist = yPos-this.yPos;
+        double xdist = xPos-this.xPos;
+        double angle = Math.atan2(ydist,xdist);
+        double speed = Math.sqrt(ydist*ydist+xdist*xdist);
         this.xSpeed += xSpeed;
         this.ySpeed += ySpeed;
         this.xSpeed = speed*Math.cos(angle);

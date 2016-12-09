@@ -127,10 +127,6 @@ public class Main extends JPanel implements KeyListener {
             else if(players[1].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
                 ball.hit(players[1].getCenterX(), players[1].getCenterY(), players[1].xSpeed, players[1].ySpeed);
 
-            System.out.println("X: " + ball.getCenterX());
-            System.out.println("Y: " + ball.getCenterY());
-            System.out.println(players[0].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE));
-
             frame.repaint();
         }
     }

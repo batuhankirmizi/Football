@@ -4,7 +4,7 @@ import javafx.scene.shape.Circle;
 
 import java.awt.*;
 
-public class Player extends Circle {
+class Player extends Circle {
     String name;
     final int SIZE = 30;
     final int SPEED = 3;
