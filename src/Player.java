@@ -6,15 +6,14 @@ import java.awt.event.KeyListener;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- *              Created by 28627239740ana on 9.12.2016.
- */
 public class Player extends Circle implements KeyListener {
     String name;
     double xPos;
     double yPos;
     final int SIZE = 30;
-    final int SPEED = 5;
+    final int SPEED = 3;
+    public int xSpeed=0;
+    public int ySpeed=0;
 
     final Set<Character> pressed = new HashSet<Character>();
 

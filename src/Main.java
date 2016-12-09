@@ -5,13 +5,10 @@ import java.awt.event.KeyListener;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- *                  Created by 28627239740ana on 9.12.2016.
- */
 public class Main extends JPanel implements KeyListener {
     private static JFrame frame;
-
     private final int PLAYER_COUNT = 2;
+	
 
     private static Player[] players;
     private static Ball ball;
@@ -32,14 +29,22 @@ public class Main extends JPanel implements KeyListener {
                     e.printStackTrace();
                 }
 
-                if(pressed.contains(KeyEvent.VK_W) && !pressed.contains(KeyEvent.VK_S))
+                if(pressed.contains(KeyEvent.VK_W) && !pressed.contains(KeyEvent.VK_S)){
                     players[0].setCenterY(players[0].getCenterY() - players[0].SPEED);
-                if(!pressed.contains(KeyEvent.VK_W) && pressed.contains(KeyEvent.VK_S))
+					players[0].xSpeed=-players[0].speed
+				}
+                else if(!pressed.contains(KeyEvent.VK_W) && pressed.contains(KeyEvent.VK_S)){
                     players[0].setCenterY(players[0].getCenterY() + players[0].SPEED);
-                if(pressed.contains(KeyEvent.VK_A) && !pressed.contains(KeyEvent.VK_D))
+					players[0].xSpeed=players[0].speed
+				}else players[0].xSpeed=0
+                if(pressed.contains(KeyEvent.VK_A) && !pressed.contains(KeyEvent.VK_D)){
                     players[0].setCenterX(players[0].getCenterX() - players[0].SPEED);
-                if(!pressed.contains(KeyEvent.VK_A) && pressed.contains(KeyEvent.VK_D))
+					players[0].ySpeed=-players[0].speed
+				}
+                else if(!pressed.contains(KeyEvent.VK_A) && pressed.contains(KeyEvent.VK_D)){
                     players[0].setCenterX(players[0].getCenterX() + players[0].SPEED);
+					players[0].ySpeed=players[0].speed
+				}else players[0].ySpeed=0
             }
         }
     });
@@ -55,14 +60,22 @@ public class Main extends JPanel implements KeyListener {
                     e.printStackTrace();
                 }
 
-                if(pressed.contains(KeyEvent.VK_UP) && !pressed.contains(KeyEvent.VK_DOWN))
+                if(pressed.contains(KeyEvent.VK_UP) && !pressed.contains(KeyEvent.VK_DOWN)){
                     players[1].setCenterY(players[1].getCenterY() - players[1].SPEED);
-                if(pressed.contains(!KeyEvent.VK_UP) && pressed.contains(KeyEvent.VK_DOWN))
+					players[1].xSpeed=-players[1].speed
+				}
+                else if(pressed.contains(!KeyEvent.VK_UP) && pressed.contains(KeyEvent.VK_DOWN)){
                     players[1].setCenterY(players[1].getCenterY() + players[1].SPEED);
-                if(pressed.contains(KeyEvent.VK_LEFT) && !pressed.contains(KeyEvent.VK_RIGHT))
+					players[1].xSpeed=players[1].speed
+				}else players[1].xSpeed=0
+                if(pressed.contains(KeyEvent.VK_LEFT) && !pressed.contains(KeyEvent.VK_RIGHT)){
                     players[1].setCenterX(players[1].getCenterX() - players[1].SPEED);
-                if(!pressed.contains(KeyEvent.VK_LEFT) && pressed.contains(KeyEvent.VK_RIGHT))
+					players[1].ySpeed=-players[1].speed
+				}
+                else if(!pressed.contains(KeyEvent.VK_LEFT) && pressed.contains(KeyEvent.VK_RIGHT)){
                     players[1].setCenterX(players[1].getCenterX() + players[1].SPEED);
+					players[1].ySpeed=players[1].speed
+				}else players[1].ySpeed=0
                 
             }
         }
@@ -78,7 +91,7 @@ public class Main extends JPanel implements KeyListener {
         // Initialize players
         players = new Player[PLAYER_COUNT];
         players[0] = new Player("Batu", WIDTH / 3, HEIGHT / 2);
-        players[1] = new Player("AytaÃ§", WIDTH * 2 / 3, HEIGHT / 2);
+        players[1] = new Player("Aytaç", WIDTH * 2 / 3, HEIGHT / 2);
 
         // Initialize ball
         ball = new Ball();
@@ -101,6 +114,7 @@ public class Main extends JPanel implements KeyListener {
 
         // TODO Game loop
         t1.start();
+		t2.start();
         ball.ballMover.start();
         while(true) {
             try {
@@ -110,9 +124,9 @@ public class Main extends JPanel implements KeyListener {
             }
 
             if(players[0].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
-                ball.hit(players[0].getCenterX(), players[0].getCenterY(), players[0].SIZE, players[0].SIZE);
+                ball.hit(players[0].getCenterX(), players[0].getCenterY(), players[0].xSpeed, players[0].ySpeed);
             else if(players[1].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
-                ball.hit(players[1].getCenterX(), players[1].getCenterY(), players[1].SIZE, players[1].SIZE);
+                ball.hit(players[1].getCenterX(), players[1].getCenterY(), players[1].xSpeed, players[1].ySpeed);
 
             frame.repaint();
         }
