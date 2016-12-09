@@ -7,6 +7,24 @@ public class Ball extends Circle{
 	double xSpeed=1;
 	double ySpeed=1;
 	final int SIZE=15;
+	public Thread ballMover=new Thread(new Runnable(){
+		@Override
+		public void run(){
+			while(true){
+				try{
+					Thread.sleep(500);
+				}catch(InterruptedException e){
+					e.printStackTrace();
+				}
+				xPos+=xSpeed;
+				yPos+=ySpeed;
+				if(xSpeed>0)xSpeed-=0.5;
+				else if(xSpeed<0)xSpeed+=0.5;
+				if(ySpeed>0)xSpeed-=0.5;
+				else if(ySpeed<0)xSpeed+=0.5;
+			}
+		}
+	});
 	public void draw(Graphics g){
 		g.setColor(Color.green);
 		g.fillOval((int)xPos,(int)yPos,SIZE,SIZE);
@@ -23,8 +41,8 @@ public class Ball extends Circle{
 		double speed=Math.sqrt(ydist*ydist+xdist*xdist);
 		this.xSpeed=speed*cotangent;
 		this.ySpeed=speed*tangent;
-		this.xSpeed+=xSpeed/2;
-		this.ySpeed+=ySpeed/2;
+		this.xSpeed+=xSpeed;
+		this.ySpeed+=ySpeed;
 	}
 
 }
