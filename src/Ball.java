@@ -11,17 +11,17 @@ public class Ball extends Circle{
 		@Override
 		public void run(){
 			while(true){
+				xPos+=xSpeed;
+				yPos+=ySpeed;
+				if(xSpeed>0)xSpeed-=0.05;
+				else if(xSpeed<0)xSpeed+=0.05;
+				if(ySpeed>0)xSpeed-=0.05;
+				else if(ySpeed<0)xSpeed+=0.05;
 				try{
-				     Thread.sleep(500);
+				     Thread.sleep(32);
 				}catch(InterruptedException e){
 					e.printStackTrace();
 				}
-				xPos+=xSpeed;
-				yPos+=ySpeed;
-				if(xSpeed>0)xSpeed-=0.5;
-				else if(xSpeed<0)xSpeed+=0.5;
-				if(ySpeed>0)xSpeed-=0.5;
-				else if(ySpeed<0)xSpeed+=0.5;
 			}
 		}
 	});
