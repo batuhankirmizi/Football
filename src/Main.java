@@ -1,3 +1,5 @@
+package futbol;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -8,7 +10,7 @@ import java.util.Set;
 public class Main extends JPanel implements KeyListener {
     private static JFrame frame;
     private final int PLAYER_COUNT = 2;
-	
+
 
     private static Player[] players;
     private static Ball ball;
@@ -31,20 +33,20 @@ public class Main extends JPanel implements KeyListener {
 
                 if(pressed.contains(KeyEvent.VK_W) && !pressed.contains(KeyEvent.VK_S)){
                     players[0].setCenterY(players[0].getCenterY() - players[0].SPEED);
-					players[0].xSpeed=-players[0].speed	//Player.xSpeed oyuncunun hızını hit() için göstermeye yarar
-				}
+                    players[0].xSpeed=-players[0].SPEED;	//Player.xSpeed oyuncunun hızını hit() için göstermeye yarar
+                }
                 else if(!pressed.contains(KeyEvent.VK_W) && pressed.contains(KeyEvent.VK_S)){
                     players[0].setCenterY(players[0].getCenterY() + players[0].SPEED);
-					players[0].xSpeed=players[0].speed
-				}else players[0].xSpeed=0
+                    players[0].xSpeed=players[0].SPEED;
+                }else players[0].xSpeed=0;
                 if(pressed.contains(KeyEvent.VK_A) && !pressed.contains(KeyEvent.VK_D)){
                     players[0].setCenterX(players[0].getCenterX() - players[0].SPEED);
-					players[0].ySpeed=-players[0].speed
-				}
+                    players[0].ySpeed=-players[0].SPEED;
+                }
                 else if(!pressed.contains(KeyEvent.VK_A) && pressed.contains(KeyEvent.VK_D)){
                     players[0].setCenterX(players[0].getCenterX() + players[0].SPEED);
-					players[0].ySpeed=players[0].speed
-				}else players[0].ySpeed=0
+                    players[0].ySpeed=players[0].SPEED;
+                }else players[0].ySpeed=0;
             }
         }
     });
@@ -62,21 +64,21 @@ public class Main extends JPanel implements KeyListener {
 
                 if(pressed.contains(KeyEvent.VK_UP) && !pressed.contains(KeyEvent.VK_DOWN)){
                     players[1].setCenterY(players[1].getCenterY() - players[1].SPEED);
-					players[1].xSpeed=-players[1].speed
-				}
-                else if(pressed.contains(!KeyEvent.VK_UP) && pressed.contains(KeyEvent.VK_DOWN)){
+                    players[1].xSpeed=-players[1].SPEED;
+                }
+                else if(!pressed.contains(KeyEvent.VK_UP) && pressed.contains(KeyEvent.VK_DOWN)){
                     players[1].setCenterY(players[1].getCenterY() + players[1].SPEED);
-					players[1].xSpeed=players[1].speed
-				}else players[1].xSpeed=0
+                    players[1].xSpeed=players[1].SPEED;
+                }else players[1].xSpeed=0;
                 if(pressed.contains(KeyEvent.VK_LEFT) && !pressed.contains(KeyEvent.VK_RIGHT)){
                     players[1].setCenterX(players[1].getCenterX() - players[1].SPEED);
-					players[1].ySpeed=-players[1].speed
-				}
+                    players[1].ySpeed=-players[1].SPEED;
+                }
                 else if(!pressed.contains(KeyEvent.VK_LEFT) && pressed.contains(KeyEvent.VK_RIGHT)){
                     players[1].setCenterX(players[1].getCenterX() + players[1].SPEED);
-					players[1].ySpeed=players[1].speed
-				}else players[1].ySpeed=0
-                
+                    players[1].ySpeed=players[1].SPEED;
+                }else players[1].ySpeed=0;
+
             }
         }
     });
@@ -114,7 +116,7 @@ public class Main extends JPanel implements KeyListener {
 
         // TODO Game loop
         t1.start();
-		t2.start();
+        t2.start();
         ball.ballMover.start();
         while(true) {
             try {
@@ -122,7 +124,7 @@ public class Main extends JPanel implements KeyListener {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-			// hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
+            // hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
             if(players[0].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
                 ball.hit(players[0].getCenterX(), players[0].getCenterY(), players[0].xSpeed, players[0].ySpeed);
             else if(players[1].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
