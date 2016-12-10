@@ -8,6 +8,7 @@ class Player extends Circle {
     String name;
     final int SIZE = 30;
     final int SPEED = 3;
+	double movspeed=3;
     int xSpeed=0;
     int ySpeed=0;
 
