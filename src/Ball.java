@@ -18,10 +18,10 @@ class Ball extends Circle{
                 setCenterY(getCenterY() + ySpeed);
                 
                 //Ball bounce
-                if(getCenterX<=SIZE||getCenterX>=Main.WIDTH-SIZE)
+                if(getCenterX()<=SIZE||getCenterX()>=Main.WIDTH-SIZE)
                     xSpeed=-xSpeed;
-                if(getCenterY<=SIZE||getCenterY>=Main.HEIGHT-SIZE)
-                    YSpeed=-ySpeed;
+                if(getCenterY()<=SIZE||getCenterY()>=Main.HEIGHT-SIZE)
+                    ySpeed=-ySpeed;
                 
                 //Ball slows over time
                 if(xSpeed>slow)
@@ -68,8 +68,8 @@ class Ball extends Circle{
         this.ySpeed = ySpeed;
         double angle = Math.atan2(ydist,xdist);
         double speed = Math.sqrt(ydist*ydist+xdist*xdist);
-        this.xSpeed = speed*Math.cos(angle);
-        this.ySpeed = speed*Math.sin(angle);
+        this.xSpeed = -speed*Math.cos(angle);
+        this.ySpeed = -speed*Math.sin(angle);
         this.xSpeed += xSpeed;	//Bu iki satırın tekrar eklenmesi top ve oyuncu arasındaki açının yanı sıra
         this.ySpeed += ySpeed;	//topun oyuncunun hareket yönüne doğru da hareket etmesini sağlar
     }
