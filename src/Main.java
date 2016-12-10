@@ -86,7 +86,31 @@ public class Main extends JPanel implements KeyListener {
         }
     });
 
-    Main() {
+    public static void main(String[] args) {
+        Main m = new Main();
+
+        // TODO Game loop
+        t1.start();
+        t2.start();
+        ball.ballMover.start();
+        while(true) {
+            try {
+                Thread.sleep(16);	// 1000ms/60fps=16.66
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
+            if(players[0].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
+                ball.hit(players[0].getCenterX(), players[0].getCenterY(), players[0].xSpeed, players[0].ySpeed);
+            else if(players[1].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
+                ball.hit(players[1].getCenterX(), players[1].getCenterY(), players[1].xSpeed, players[1].ySpeed);
+
+            frame.repaint();
+        }
+    }
+
+	Main() {
         frame = new JFrame("Football");
         frame.setSize(WIDTH, HEIGHT);
         frame.setLocation(200, 20);
@@ -113,31 +137,7 @@ public class Main extends JPanel implements KeyListener {
 
         frame.setVisible(true);
     }
-
-    public static void main(String[] args) {
-        Main m = new Main();
-
-        // TODO Game loop
-        t1.start();
-        t2.start();
-        ball.ballMover.start();
-        while(true) {
-            try {
-                Thread.sleep(16);	// 1000ms/60fps=16.66
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
-            if(players[0].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
-                ball.hit(players[0].getCenterX(), players[0].getCenterY(), players[0].xSpeed, players[0].ySpeed);
-            else if(players[1].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE))
-                ball.hit(players[1].getCenterX(), players[1].getCenterY(), players[1].xSpeed, players[1].ySpeed);
-
-            frame.repaint();
-        }
-    }
-
+	
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
