@@ -64,8 +64,8 @@ class Ball extends Circle{
     void hit(double xPos,double yPos,double xSpeed,double ySpeed){
         double ydist = yPos-this.yPos;
         double xdist = xPos-this.xPos;
-        this.xSpeed += xSpeed;
-        this.ySpeed += ySpeed;
+        this.xSpeed = xSpeed;
+        this.ySpeed = ySpeed;
         double angle = Math.atan2(ydist,xdist);
         double speed = Math.sqrt(ydist*ydist+xdist*xdist);
         this.xSpeed = speed*Math.cos(angle);
