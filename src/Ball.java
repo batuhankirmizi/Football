@@ -9,25 +9,32 @@ class Ball extends Circle{
     double xSpeed = 0;
     double ySpeed = 0;
     final int SIZE=15;
-
+    double slow=0.05
     Thread ballMover=new Thread(new Runnable(){
         @Override
         public void run(){
             while(true){
                 setCenterX(getCenterX() + xSpeed);
                 setCenterY(getCenterY() + ySpeed);
-
-                if(xSpeed>0.05)
-                    xSpeed -= 0.05;
-                else if(xSpeed<-0.05)
-                    xSpeed += 0.05;
-                else xSpeed=0;
                 
-                if(ySpeed>0.05)
-                    xSpeed -= 0.05;
-                else if(ySpeed<-0.05)
-                    xSpeed += 0.05;
+                //Ball bounce
+                if(getCenterX<=SIZE||getCenterX>=Main.WIDTH-SIZE)
+                    xSpeed=-xSpeed;
+                if(getCenterY<=SIZE||getCenterY>=Main.HEIGHT-SIZE)
+                    YSpeed=-ySpeed;
+                
+                //Ball slows over time
+                if(xSpeed>slow)
+                    xSpeed -=slow;
+                else if(xSpeed<-slow)
+                    xSpeed +=slow;
+                else xSpeed=0;
+                if(ySpeed>slow)
+                    xSpeed -= slow;
+                else if(ySpeed<-slow)
+                    xSpeed += slow;
                 else xSpeed=0
+                    
                 try{
                     Thread.sleep(32);
                 }catch(InterruptedException e){
@@ -57,10 +64,10 @@ class Ball extends Circle{
     void hit(double xPos,double yPos,double xSpeed,double ySpeed){
         double ydist = yPos-this.yPos;
         double xdist = xPos-this.xPos;
-        double angle = Math.atan2(ydist,xdist);
-        double speed = Math.sqrt(ydist*ydist+xdist*xdist);
         this.xSpeed += xSpeed;
         this.ySpeed += ySpeed;
+        double angle = Math.atan2(ydist,xdist);
+        double speed = Math.sqrt(ydist*ydist+xdist*xdist);
         this.xSpeed = speed*Math.cos(angle);
         this.ySpeed = speed*Math.sin(angle);
         this.xSpeed += xSpeed;	//Bu iki satırın tekrar eklenmesi top ve oyuncu arasındaki açının yanı sıra
