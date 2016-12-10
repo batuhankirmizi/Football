@@ -9,7 +9,7 @@ class Ball extends Circle{
     double xSpeed = 0;
     double ySpeed = 0;
     final int SIZE=15;
-    double slow=0.05
+    double slow=0.05;
     Thread ballMover=new Thread(new Runnable(){
         @Override
         public void run(){
