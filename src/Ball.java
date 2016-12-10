@@ -17,16 +17,17 @@ class Ball extends Circle{
                 setCenterX(getCenterX() + xSpeed);
                 setCenterY(getCenterY() + ySpeed);
 
-                if(xSpeed>0)
+                if(xSpeed>0.05)
                     xSpeed -= 0.05;
-                else if(xSpeed<0)
+                else if(xSpeed<-0.05)
                     xSpeed += 0.05;
-
-                if(ySpeed>0)
+                else xSpeed=0;
+                
+                if(ySpeed>0.05)
                     xSpeed -= 0.05;
-                else if(ySpeed<0)
+                else if(ySpeed<-0.05)
                     xSpeed += 0.05;
-
+                else xSpeed=0
                 try{
                     Thread.sleep(32);
                 }catch(InterruptedException e){
