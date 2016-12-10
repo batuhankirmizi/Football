@@ -30,21 +30,21 @@ public class Main extends JPanel implements KeyListener {
                     e.printStackTrace();
                 }
 
-                if(pressed.contains(KeyEvent.VK_UP) && !pressed.contains(KeyEvent.VK_DOWN)) {
+                if(pressed.contains(KeyEvent.VK_W) && !pressed.contains(KeyEvent.VK_S)) {
                     if(players[0].getCenterY() >= 0)
                         players[0].setCenterY(players[0].getCenterY() - players[0].movspeed);
                     players[0].xSpeed=-players[0].movspeed;
-                } else if(!pressed.contains(KeyEvent.VK_UP) && pressed.contains(KeyEvent.VK_DOWN)) {
+                } else if(!pressed.contains(KeyEvent.W) && pressed.contains(KeyEvent.VK_S)) {
                     if(players[0].getCenterY() <= HEIGHT - 70)
                         players[0].setCenterY(players[0].getCenterY() + players[0].movspeed);
                     players[0].xSpeed=players[0].movspeed;
                 } else players[0].xSpeed=0;
 
-                if(pressed.contains(KeyEvent.VK_LEFT) && !pressed.contains(KeyEvent.VK_RIGHT)) {
+                if(pressed.contains(KeyEvent.VK_A) && !pressed.contains(KeyEvent.VK_D)) {
                     if(players[0].getCenterX() >= 0)
                         players[0].setCenterX(players[0].getCenterX() - players[0].movspeed);
                     players[0].ySpeed=-players[0].movspeed;
-                } else if(!pressed.contains(KeyEvent.VK_LEFT) && pressed.contains(KeyEvent.VK_RIGHT)) {
+                } else if(!pressed.contains(KeyEvent.VK_A) && pressed.contains(KeyEvent.VK_D)) {
                     if(players[0].getCenterX() <= WIDTH - 40)
                         players[0].setCenterX(players[0].getCenterX() + players[0].movspeed);
                     players[0].ySpeed=players[0].movspeed;
