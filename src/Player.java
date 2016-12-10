@@ -7,10 +7,13 @@ import java.awt.*;
 class Player extends Circle {
     String name;
     final int SIZE = 30;
-    final int SPEED = 3;
-	double movspeed=3;
-    int xSpeed=0;
-    int ySpeed=0;
+    final int SPEED = 6;
+	public double movspeed=6;
+	double speedM=movspeed/Math.log(125);
+    double xSpeed=0;
+	int i=0;
+    double ySpeed=0;
+	int j=0;
 
     Player(String name, double xPos, double yPos) {
         this.name = name;
