@@ -9,7 +9,7 @@ class Ball extends Circle{
     double xSpeed = 0;
     double ySpeed = 0;
     final int SIZE=15;
-    double slow=1.5;
+    double slow=1.25;
 	double slowX=0;
 	double slowY=0;
     Thread ballMover=new Thread(new Runnable(){
@@ -18,19 +18,19 @@ class Ball extends Circle{
             while(true){
 				
 				//Ball bounce
-                if((getCenterX()<=SIZE)&&xSpeed<0){
+                if((getCenterX()<=SIZE)&&xSpeed<0){							//hit top
                     xSpeed=-xSpeed+0.2;
 					System.out.println("bounce");
 				}
-				else if(xSpeed>0&&(getCenterX()>=Main.WIDTH-SIZE*2-20)){
+				else if(xSpeed>0&&(getCenterX()>=Main.WIDTH-SIZE*2-20)){	//hit bot
                     xSpeed=-xSpeed-0.2;
 					System.out.println("bounce");
 				}
-                if((getCenterY()<=SIZE)&&ySpeed<0){
+                if((getCenterY()<=SIZE)&&ySpeed<0){							//hit left
                     ySpeed=-ySpeed+0.2;
 					System.out.println("bounce");
 				}
-				else if(ySpeed>0&&(getCenterY()>=Main.HEIGHT-SIZE*2-20)){
+				else if(ySpeed>0&&(getCenterY()>=Main.HEIGHT-SIZE*2-20)){	//hit right
                     ySpeed=-ySpeed-0.2;
 					System.out.println("bounce");
 				}
@@ -42,8 +42,13 @@ class Ball extends Circle{
                 //Ball slows over time
 				double moveAngle;
 				moveAngle=Math.atan2(ySpeed,xSpeed);
+				slowX=slow*Math.abs(Math.cos(moveAngle));
+				slowY=slow*Math.abs(Math.sin(moveAngle));
+				
+				/*
 				slowX=slow*xSpeed/(xSpeed+ySpeed);
 				slowY=slow*ySpeed/(xSpeed+ySpeed);
+				*/
 				
 				
                 if(xSpeed>=slowX)
