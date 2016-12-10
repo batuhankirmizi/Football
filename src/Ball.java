@@ -33,7 +33,7 @@ class Ball extends Circle{
                     xSpeed -= slow;
                 else if(ySpeed<-slow)
                     xSpeed += slow;
-                else xSpeed=0
+                else xSpeed=0;
                     
                 try{
                     Thread.sleep(32);
