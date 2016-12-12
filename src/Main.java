@@ -24,6 +24,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
     static Set<Integer> pressed = new HashSet<>();
 	public JMenuBar menuBar;
+	JMenuItem m11;
 	JMenuItem m21;
 	boolean showStats=false;
 
@@ -83,13 +84,10 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
     }
 	public static void gameCodes(){
 		// hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
-		if(players[0].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE)){
-			ball.hit(players[0].getCenterX(), players[0].getCenterY(), players[0].xSpeed, players[0].ySpeed);
-			System.out.println("p0 hit");
-		}
-		if(players[1].intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE)){
-			ball.hit(players[1].getCenterX(), players[1].getCenterY(), players[1].xSpeed, players[1].ySpeed);
-			System.out.println("p1 hit");
+		for(Player p:players){
+			if(p.intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE)){
+				ball.hit(p.getCenterX(), p.getCenterY(), p.xSpeed, p.ySpeed);
+			}
 		}
 	}
 	Main() {
@@ -135,8 +133,10 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		if(showStats){
 			g.drawString("FPS: " + fps+"\n", 5, 10);
 			g.drawString("p1 speed: "+Math.sqrt(players[0].xSpeed*players[0].xSpeed+players[0].ySpeed*players[0].ySpeed), 5, 20);
-			g.drawString("p2 speed: "+Math.sqrt(players[1].xSpeed*players[1].xSpeed+players[1].ySpeed*players[1].ySpeed), 5, 30);
-			g.drawString("ball speed: "+Math.sqrt(ball.xSpeed*ball.xSpeed+ball.ySpeed*ball.ySpeed), 5, 40);
+			g.drawString("p1 x: "+players[0].xSpeed+" y: "+players[0].ySpeed, 5, 30);
+			g.drawString("p2 speed: "+Math.sqrt(players[1].xSpeed*players[1].xSpeed+players[1].ySpeed*players[1].ySpeed), 5, 40);
+			g.drawString("ball speed: "+Math.sqrt(ball.xSpeed*ball.xSpeed+ball.ySpeed*ball.ySpeed), 5, 50);
+			
 		}
         players[0].draw(g);
         players[1].draw(g);
@@ -168,7 +168,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		menuBar=new JMenuBar();
 		JMenu menu1=new JMenu("Game");
 		JMenu menu2=new JMenu("Engine");
-		JMenuItem m11=new JMenuItem("Reset");
+		m11=new JMenuItem("Reset");
 		m21=new JMenuItem("Show Stats");
 		m21.addActionListener(this);
 		m11.addActionListener(this);
@@ -183,6 +183,18 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
         if((JMenuItem)(e.getSource())==m21){
 			if(showStats)showStats=false;
 			else showStats=true;
+		}else if((JMenuItem)(e.getSource())==m11){
+			int i=1;
+			for(Player p:players){
+				p.xSpeed=0;
+				p.ySpeed=0;
+				p.setCenterY(HEIGHT/2);
+				p.setCenterX(i*WIDTH/3);
+				i++;
+			}
+			i=1;
+			ball.setCenterX(WIDTH/2);
+			ball.setCenterY(HEIGHT/2);
 		}
     }
 	public void itemStateChanged(ItemEvent e) {
