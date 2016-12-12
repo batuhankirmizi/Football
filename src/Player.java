@@ -39,18 +39,6 @@ class Player extends Circle implements Runnable {
 				e.printStackTrace();
 			}
 			
-			/*
-			if(i>0)
-				xSpeed=speedM*Math.log(Math.abs(i));
-			else if (i<0) xSpeed=-speedM*Math.log(Math.abs(i));
-			else xSpeed=0;
-			
-			if(j>0)
-				ySpeed=speedM*Math.log(Math.abs(j));
-			else if(j<0)ySpeed=-speedM*Math.log(Math.abs(j));
-			else ySpeed=0;
-			*/
-			
 			xSpeed=SPEED*Math.sin(i*Math.PI/250)*Math.cos(j*Math.PI/500);
 			ySpeed=SPEED*Math.sin(j*Math.PI/250)*Math.cos(i*Math.PI/500);
 			
