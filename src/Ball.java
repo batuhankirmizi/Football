@@ -9,7 +9,7 @@ class Ball extends Circle{
     double xSpeed = 0;
     double ySpeed = 0;
     final int SIZE=15;
-    double slow=1.25;
+    double slow=1.0;
 	double slowX=0;
 	double slowY=0;
     Thread ballMover=new Thread(new Runnable(){
@@ -89,15 +89,15 @@ class Ball extends Circle{
     }
 
     void hit(double xPos,double yPos,double xSpeed,double ySpeed){
-        double ydist = yPos-this.yPos;
-        double xdist = xPos-this.xPos;
-        this.xSpeed = xSpeed/2;
-        this.ySpeed = ySpeed/2;
-        double angle = Math.atan2(ydist,xdist);
-        double speed = Math.sqrt(ydist*ydist+xdist*xdist);
-        this.xSpeed = -speed*Math.cos(angle);
-		this.ySpeed = -speed*Math.sin(angle);
-        this.xSpeed += xSpeed/2;	//Bu iki satırın tekrar eklenmesi top ve oyuncu arasındaki açının yanı sıra
-        this.ySpeed += ySpeed/2;	//topun oyuncunun hareket yönüne doğru da hareket etmesini sağlar
+        double ydist = this.yPos-yPos;
+        double xdist = this.xPos-xPos;
+        this.xSpeed = xSpeed*2;
+        this.ySpeed = ySpeed*2;
+        double speed = Math.sqrt(ySpeed*ySpeed+xSpeed*xSpeed)+20;
+		double angle = Math.atan2(ydist,xdist);
+        this.xSpeed = speed*Math.cos(angle);
+		this.ySpeed = speed*Math.sin(angle);
+        this.xSpeed += xSpeed*2;	//Bu iki satırın tekrar eklenmesi top ve oyuncu arasındaki açının yanı sıra
+        this.ySpeed += ySpeed*2;	//topun oyuncunun hareket yönüne doğru da hareket etmesini sağlar
     }
 }
