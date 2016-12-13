@@ -19,7 +19,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	
 	static double target_fps = 60;
 	static int fps = 60;
-	static int frameCount = 0;
+	static int frameCount = 60;
 	float interpolation;
 
     static Set<Integer> pressed = new HashSet<>();
