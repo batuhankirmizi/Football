@@ -14,8 +14,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
     private static Player[] players;
     private static Ball ball;
 
-    static int WIDTH = 1200;
-    static int HEIGHT = 800;
+    static int width = 1200;
+    static int height = 800;
 	
 	static double target_fps = 60;
 	static int fps = 60;
@@ -23,18 +23,19 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	float interpolation;
 
     static Set<Integer> pressed = new HashSet<>();
-	public JMenuBar menuBar;
+	public static JMenuBar menuBar;
 	JMenuItem m11;
 	JMenuItem m21;
 	JMenuItem m2r1;
 	JMenuItem m2r2;
 	boolean showStats=false;
+	static short tekcift=0;
 
     public static void main(String[] args) {
         Main m = new Main();
 		
 		//interepolation things
-		final double GAME_HERTZ = 30.0;
+		final double GAME_HERTZ = 125.0;
 		//Calculate how many ns each frame should take for our target game hertz.
 		final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
 		final int MAX_UPDATES_BEFORE_RENDER = 5;
@@ -46,11 +47,6 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		int lastSecondTime = (int) (lastUpdateTime / 1000000000);
 
         // TODO Game loop
-        Thread t1 = new Thread(players[0]);
-		Thread t2 = new Thread(players[1]);
-		t1.start();
-		t2.start();
-        ball.ballMover.start();
         while(true) {
 			double now = System.nanoTime();
 			int updateCount = 0;
@@ -81,6 +77,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			   //You can remove this line and it will still work (better), your CPU just climbs on certain OSes.
 			   try {Thread.sleep(1);} catch(Exception e) {}
 			   now = System.nanoTime();
+
 			}
         }
     }
@@ -90,11 +87,82 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			if(p.intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE)){
 				ball.hit(p.getCenterX(), p.getCenterY(), p.xSpeed, p.ySpeed);
 			}
+			p.xSpeed=p.SPEED*Math.sin(p.i*Math.PI/250)*Math.cos(p.j*Math.PI/500);
+			p.ySpeed=p.SPEED*Math.sin(p.j*Math.PI/250)*Math.cos(p.i*Math.PI/500);
+
+			if(p.getCenterY()<=0)										//stop player from moving out of frame
+				p.setCenterY(p.getCenterY() + p.movspeed);
+			if(p.getCenterY()>=Main.height - 70-(Main.menuBar.isVisible()?20:0))
+				p.setCenterY(p.getCenterY() - p.movspeed);
+			if(p.getCenterX()<=0)
+				p.setCenterX(p.getCenterX() + p.movspeed);
+			if(p.getCenterX() >= Main.width - 40)
+				p.setCenterX(p.getCenterX() - p.movspeed);
+
+			p.setCenterY(p.getCenterY() + p.ySpeed);						//move player
+			p.setCenterX(p.getCenterX() + p.xSpeed);
+
+			if(p.i>2)p.i-=2;			//slower
+			else if(p.i<-2)p.i+=2;
+			else p.i=0;
+			if(p.j>2)p.j-=2;
+			else if(p.j<-2)p.j+=2;
+			else p.j=0;
+
+			if(Main.pressed.contains(p.up) && !Main.pressed.contains(p.down))	//keylisten
+				if(p.j>-122)p.j-=3;
+				else p.j=-125;
+			else if(!Main.pressed.contains(p.up) && Main.pressed.contains(p.down))
+				if(p.j<122)p.j+=3;
+				else p.j=125;
+
+			if(Main.pressed.contains(p.left) && !Main.pressed.contains(p.right))
+				if(p.i>-122)p.i-=3;
+				else p.i=-125;
+			else if(!Main.pressed.contains(p.left) && Main.pressed.contains(p.right))
+				if(p.i<122)p.i+=3;
+				else p.i=125;
+
+			if(tekcift==0){
+				//Ball bounce
+				if((ball.getCenterX()<=ball.SIZE)&&ball.xSpeed<0){                            //hit top
+					ball.xSpeed=-ball.xSpeed+0.2;
+					System.out.println("bounce");
+				}else if(ball.xSpeed>0&&(ball.getCenterX()>=Main.width-(Main.menuBar.isVisible()?40:0)-ball.SIZE*2-20)){    //hit bot
+					ball.xSpeed=-ball.xSpeed-0.2;
+					System.out.println("bounce");
+				}
+				if((ball.getCenterY()<=ball.SIZE)&&ball.ySpeed<0){                            //hit left
+					ball.ySpeed=-ball.ySpeed+0.2;
+					System.out.println("bounce");
+				}else if(ball.ySpeed>0&&(ball.getCenterY()>=Main.height-ball.SIZE*2-20)){    //hit right
+					ball.ySpeed=-ball.ySpeed-0.2;
+					System.out.println("bounce");
+				}
+
+				//Ball move
+				ball.setCenterX(ball.getCenterX()+ball.xSpeed);
+				ball.setCenterY(ball.getCenterY()+ball.ySpeed);
+
+				//Ball slows over time
+				double moveAngle;
+				moveAngle=Math.atan2(ball.ySpeed,ball.xSpeed);
+				ball.slowX=ball.slow*Math.abs(Math.cos(moveAngle));
+				ball.slowY=ball.slow*Math.abs(Math.sin(moveAngle));
+
+				if(ball.xSpeed>=ball.slowX) ball.xSpeed-=ball.slowX;
+				else if(ball.xSpeed<=-ball.slowX) ball.xSpeed+=ball.slowX;
+				else ball.xSpeed=0;
+				if(ball.ySpeed>=ball.slowY) ball.ySpeed-=ball.slowY;
+				else if(ball.ySpeed<=-ball.slowY) ball.ySpeed+=ball.slowY;
+				else ball.ySpeed=0;
+				tekcift=1;
+			}else tekcift=0;
 		}
 	}
 	Main() {
         frame = new JFrame("Football");
-        frame.setSize(WIDTH, HEIGHT);
+        frame.setSize(width, height);
         frame.setLocation(200, 20);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -106,8 +174,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		
         // Initialize players
         players = new Player[PLAYER_COUNT];
-        players[0] = new Player("Batu", WIDTH / 3, HEIGHT / 2);
-        players[1] = new Player("Aytaç", WIDTH * 2 / 3, HEIGHT / 2);
+        players[0] = new Player("Batu", width / 3, height / 2);
+        players[1] = new Player("Aytaç", width * 2 / 3, height / 2);
 		
 		
 		// Set control keys
@@ -118,7 +186,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
         ball = new Ball();
 
         setLayout(null);
-        setSize(WIDTH, HEIGHT);
+        setSize(width, height);
         setLocation(0, 0);
         addKeyListener(this);
         setBackground(Color.BLACK);
@@ -158,15 +226,15 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		if(a=='K'){
 			if(!menuBar.isVisible()){
 				menuBar.setVisible(true);
-				HEIGHT+=20;
-				frame.setSize(WIDTH,HEIGHT);
+				height+=20;
+				frame.setSize(width,height);
 			}
 		}
 		if(a=='L'){
 			if(menuBar.isVisible()){
 				menuBar.setVisible(false);
-				HEIGHT-=20;
-				frame.setSize(WIDTH,HEIGHT);
+				height-=20;
+				frame.setSize(width,height);
 			}
 		}
 		
@@ -210,21 +278,21 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			for(Player p:players){
 				p.xSpeed=0;
 				p.ySpeed=0;
-				p.setCenterY(HEIGHT/2);
-				p.setCenterX(i*WIDTH/3);
+				p.setCenterY(height/2);
+				p.setCenterX(i*width/3);
 				i++;
 			}
 			i=1;
-			ball.setCenterX(WIDTH/2);
-			ball.setCenterY(HEIGHT/2);
+			ball.setCenterX(width/2);
+			ball.setCenterY(height/2);
 		}else if((JMenuItem)(e.getSource())==m2r1){
-			WIDTH=1200;
-			HEIGHT=820;
-	        frame.setSize(WIDTH, HEIGHT);
+			width=1200;
+			height=820;
+	        frame.setSize(width, height);
         }else if((JMenuItem)(e.getSource())==m2r2){
-	        WIDTH=800;
-	        HEIGHT=620;
-	        frame.setSize(WIDTH,HEIGHT);
+	        width=800;
+	        height=620;
+	        frame.setSize(width,height);
         }
     }
 	public void itemStateChanged(ItemEvent e) {
