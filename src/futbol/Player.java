@@ -29,6 +29,6 @@ class Player extends Circle {
 	void draw(Graphics g) {
 		g.setColor(Color.ORANGE);
 
-		g.fillOval((int)getCenterX(), (int)getCenterY(), (int)getRadius(), (int)getRadius());
+		g.fillOval((int)getCenterX()*Main.width/1200, (int)getCenterY()*Main.height/800, (int)getRadius()*Main.width/1200, (int)getRadius()*Main.width/1200);
 	}
 }

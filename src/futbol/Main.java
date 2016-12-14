@@ -13,6 +13,10 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
     private static Player[] players;
     private static Ball ball;
+    private static Shapes topBound;
+	private static Shapes botBound;
+	private static Shapes leftBound;
+	private static Shapes rightBound;
 
     static int width = 1200;
     static int height = 800;
@@ -92,11 +96,11 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
 			if(p.getCenterY()<=0)										//stop player from moving out of frame
 				p.setCenterY(p.getCenterY() + p.movspeed);
-			if(p.getCenterY()>=Main.height - 70-(Main.menuBar.isVisible()?20:0))
+			if(p.getCenterY()>=800 - 70-(Main.menuBar.isVisible()?20:0))
 				p.setCenterY(p.getCenterY() - p.movspeed);
 			if(p.getCenterX()<=0)
 				p.setCenterX(p.getCenterX() + p.movspeed);
-			if(p.getCenterX() >= Main.width - 40)
+			if(p.getCenterX() >= 1200 - 40)
 				p.setCenterX(p.getCenterX() - p.movspeed);
 
 			p.setCenterY(p.getCenterY() + p.ySpeed);						//move player
@@ -171,6 +175,10 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		frame.setJMenuBar(menuBarimiz());
 		frame.setContentPane(contPane);
 		menuBar.setVisible(false);
+
+		// Draw bounds
+		topBound=new Shapes(50,10,width-100,10);
+		botBound=new Shapes(50,height-20,width-100,10);
 		
         // Initialize players
         players = new Player[PLAYER_COUNT];
@@ -208,6 +216,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			g.drawString("ball speed: "+Math.sqrt(ball.xSpeed*ball.xSpeed+ball.ySpeed*ball.ySpeed), 5, 50);
 			
 		}
+	    topBound.draw(g);
+	    botBound.draw(g);
         players[0].draw(g);
         players[1].draw(g);
         ball.draw(g);
