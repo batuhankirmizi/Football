@@ -14,8 +14,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
     private static Player[] players;
     private static Ball ball;
 
-    static final int WIDTH = 1200;
-    static final int HEIGHT = 800;
+    static int WIDTH = 1200;
+    static int HEIGHT = 800;
 	
 	static double target_fps = 60;
 	static int fps = 60;
@@ -26,6 +26,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	public JMenuBar menuBar;
 	JMenuItem m11;
 	JMenuItem m21;
+	JMenuItem m2r1;
+	JMenuItem m2r2;
 	boolean showStats=false;
 
     public static void main(String[] args) {
@@ -153,8 +155,20 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
     public void keyPressed(KeyEvent e) {
 		int a=e.getKeyCode();
         pressed.add(a);
-		if(a=='K')menuBar.setVisible(true);
-		if(a=='L')menuBar.setVisible(false);
+		if(a=='K'){
+			if(!menuBar.isVisible()){
+				menuBar.setVisible(true);
+				HEIGHT+=20;
+				frame.setSize(WIDTH,HEIGHT);
+			}
+		}
+		if(a=='L'){
+			if(menuBar.isVisible()){
+				menuBar.setVisible(false);
+				HEIGHT-=20;
+				frame.setSize(WIDTH,HEIGHT);
+			}
+		}
 		
     }
 
@@ -170,10 +184,18 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		JMenu menu2=new JMenu("Engine");
 		m11=new JMenuItem("Reset");
 		m21=new JMenuItem("Show Stats");
+		m2r1=new JMenuItem("1200*800");
+		m2r2=new JMenuItem("800*600");
 		m21.addActionListener(this);
 		m11.addActionListener(this);
+		m2r1.addActionListener(this);
+		m2r2.addActionListener(this);
 		menu1.add(m11);
 		menu2.add(m21);
+		menu2.addSeparator();
+		menu2.add("Resolution:");
+		menu2.add(m2r1);
+		menu2.add(m2r2);
 		menuBar.add(menu1);
 		menuBar.add(menu2);
 		return menuBar;
@@ -195,7 +217,15 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			i=1;
 			ball.setCenterX(WIDTH/2);
 			ball.setCenterY(HEIGHT/2);
-		}
+		}else if((JMenuItem)(e.getSource())==m2r1){
+			WIDTH=1200;
+			HEIGHT=820;
+	        frame.setSize(WIDTH, HEIGHT);
+        }else if((JMenuItem)(e.getSource())==m2r2){
+	        WIDTH=800;
+	        HEIGHT=620;
+	        frame.setSize(WIDTH,HEIGHT);
+        }
     }
 	public void itemStateChanged(ItemEvent e) {
         JMenuItem source = (JMenuItem)(e.getSource());
