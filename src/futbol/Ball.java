@@ -27,7 +27,7 @@ class Ball extends Circle{
         xPos = getCenterX();
         yPos = getCenterY();
 
-        g.fillOval((int)xPos*Main.width/1200,(int)yPos*Main.height/800,SIZE*Main.width/1200,SIZE*Main.height/800);
+        g.fillOval((int)xPos*Main.width/1200,(int)yPos*(Main.height-(Main.menuBar.isVisible()?+20:0))/800,SIZE*Main.width/1200,SIZE*Main.width/1200);
     }
 
     void hit(double xPos,double yPos,double xSpeed,double ySpeed){

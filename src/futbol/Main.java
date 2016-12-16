@@ -88,23 +88,24 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	public static void gameCodes(){
 		// hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
 		for(Player p:players){
-			if(p.intersects(ball.getCenterX(), ball.getCenterY(), ball.SIZE, ball.SIZE)){
+			//if(p.intersects(ball.getCenterX(),ball.getCenterY(),0,0)){
+			if(Math.abs((p.xPos-ball.xPos)*(p.xPos-ball.xPos)+(p.yPos-ball.yPos)*(p.yPos-ball.yPos))<=(p.SIZE/2+ball.SIZE)*(p.SIZE/2+ball.SIZE)){
 				ball.hit(p.getCenterX(), p.getCenterY(), p.xSpeed, p.ySpeed);
 			}
 			p.xSpeed=p.SPEED*Math.sin(p.i*Math.PI/250)*Math.cos(p.j*Math.PI/500);
 			p.ySpeed=p.SPEED*Math.sin(p.j*Math.PI/250)*Math.cos(p.i*Math.PI/500);
 
-			if(p.getCenterY()<=0)										//stop player from moving out of frame
-				p.setCenterY(p.getCenterY() + p.movspeed);
-			if(p.getCenterY()>=800 - 70-(Main.menuBar.isVisible()?20:0))
-				p.setCenterY(p.getCenterY() - p.movspeed);
-			if(p.getCenterX()<=0)
-				p.setCenterX(p.getCenterX() + p.movspeed);
-			if(p.getCenterX() >= 1200 - 40)
-				p.setCenterX(p.getCenterX() - p.movspeed);
+			if(p.yPos<=0)										//stop player from moving out of frame
+				p.yPos+=p.movspeed;
+			if(p.yPos>=800 - 45-(Main.menuBar.isVisible()?20:0))
+				p.yPos-=p.movspeed;
+			if(p.xPos<=0)
+				p.xPos+=p.movspeed;
+			if(p.xPos >= 1200 - 15)
+				p.xPos-=p.movspeed;
 
-			p.setCenterY(p.getCenterY() + p.ySpeed);						//move player
-			p.setCenterX(p.getCenterX() + p.xSpeed);
+			p.setCenterY(p.yPos+=p.ySpeed);						//move player
+			p.setCenterX(p.xPos+=p.xSpeed);
 
 			if(p.i>2)p.i-=2;			//slower
 			else if(p.i<-2)p.i+=2;
@@ -177,8 +178,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		menuBar.setVisible(false);
 
 		// Draw bounds
-		topBound=new Shapes(50,10,width-100,10);
-		botBound=new Shapes(50,height-20,width-100,10);
+		topBound=new Shapes(50,20,width-100,10);
+		botBound=new Shapes(50,740,width-100,10);
 		
         // Initialize players
         players = new Player[PLAYER_COUNT];
@@ -288,8 +289,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			for(Player p:players){
 				p.xSpeed=0;
 				p.ySpeed=0;
-				p.setCenterY(height/2);
-				p.setCenterX(i*width/3);
+				p.xPos=i*width/3;
+				p.yPos=height/2;
 				i++;
 			}
 			i=1;

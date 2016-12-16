@@ -9,8 +9,10 @@ class Player extends Circle {
 	final int SIZE = 40;
 	final int SPEED = 8;
 	public double movspeed=8;
+	double xPos;
 	double xSpeed=0;
 	int i=0;
+	double yPos;
 	double ySpeed=0;
 	int j=0;
 	int up;
@@ -21,14 +23,13 @@ class Player extends Circle {
 	Player(String name, double xPos, double yPos) {
 		this.name = name;
 
-		setCenterX(xPos);
-		setCenterY(yPos);
+		this.xPos=xPos;
+		this.yPos=yPos;
 		setRadius(SIZE);
 	}
 
 	void draw(Graphics g) {
 		g.setColor(Color.ORANGE);
-
-		g.fillOval((int)getCenterX()*Main.width/1200, (int)getCenterY()*Main.height/800, (int)getRadius()*Main.width/1200, (int)getRadius()*Main.width/1200);
+		g.fillOval((int)xPos*(Main.width-25)/1200, (int)(yPos*(Main.height-(Main.menuBar.isVisible()?+20:0)-25))/800, (int)SIZE*Main.width/1200, (int)SIZE*Main.width/1200);
 	}
 }
