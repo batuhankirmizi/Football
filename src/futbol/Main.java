@@ -97,11 +97,11 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
 			if(p.yPos<=0)										//stop player from moving out of frame
 				p.yPos+=p.movspeed;
-			if(p.yPos>=800 - 45-(Main.menuBar.isVisible()?20:0))
+			if(p.yPos>=800 - p.SIZE)
 				p.yPos-=p.movspeed;
 			if(p.xPos<=0)
 				p.xPos+=p.movspeed;
-			if(p.xPos >= 1200 - 15)
+			if(p.xPos >= 1200 - p.SIZE)
 				p.xPos-=p.movspeed;
 
 			p.setCenterY(p.yPos+=p.ySpeed);						//move player
@@ -130,17 +130,17 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
 			if(tekcift==0){
 				//Ball bounce
-				if((ball.getCenterX()<=ball.SIZE)&&ball.xSpeed<0){                            //hit top
+				if((ball.xPos<=ball.SIZE)&&ball.xSpeed<0){                            //hit left
 					ball.xSpeed=-ball.xSpeed+0.2;
 					System.out.println("bounce");
-				}else if(ball.xSpeed>0&&(ball.getCenterX()>=Main.width-(Main.menuBar.isVisible()?40:0)-ball.SIZE*2-20)){    //hit bot
+				}else if(ball.xSpeed>0&&(ball.xPos>=1200-(Main.menuBar.isVisible()?20:0)-ball.SIZE*2)){    //hit right
 					ball.xSpeed=-ball.xSpeed-0.2;
 					System.out.println("bounce");
 				}
-				if((ball.getCenterY()<=ball.SIZE)&&ball.ySpeed<0){                            //hit left
+				if((ball.yPos<=ball.SIZE)&&ball.ySpeed<0){                            //hit top
 					ball.ySpeed=-ball.ySpeed+0.2;
 					System.out.println("bounce");
-				}else if(ball.ySpeed>0&&(ball.getCenterY()>=Main.height-ball.SIZE*2-20)){    //hit right
+				}else if(ball.ySpeed>0&&(ball.yPos>=800-ball.SIZE*2-20)){    //hit bot
 					ball.ySpeed=-ball.ySpeed-0.2;
 					System.out.println("bounce");
 				}
@@ -178,8 +178,10 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		menuBar.setVisible(false);
 
 		// Draw bounds
-		topBound=new Shapes(50,20,width-100,10);
-		botBound=new Shapes(50,740,width-100,10);
+		topBound=new Shapes(50,20,1100,10);
+		botBound=new Shapes(50,740,1100,10);
+		leftBound=new Shapes(50,20,10,730);
+		rightBound=new Shapes(1140,20,10,730);
 		
         // Initialize players
         players = new Player[PLAYER_COUNT];
@@ -219,6 +221,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		}
 	    topBound.draw(g);
 	    botBound.draw(g);
+	    leftBound.draw(g);
+	    rightBound.draw(g);
         players[0].draw(g);
         players[1].draw(g);
         ball.draw(g);
