@@ -35,7 +35,7 @@ class Player extends Circle {
 		*/
 
 		g.setColor(Color.ORANGE);
-		g.fillOval((int)xPos*(Main.width-25)/1200, (int)(yPos*(Main.height-(Main.menuBar.isVisible()?+20:0)-25))/800, (int)SIZE*Main.width/1200, (int)SIZE*Main.width/1200);
+		g.fillOval((int)(xPos-SIZE/2)*(Main.width)/1200, (int)((yPos-SIZE/2)*(Main.height))/800, (int)SIZE*Main.width/1200, (int)SIZE*Main.width/1200);
 
 	}
 }
