@@ -90,22 +90,18 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		for(Player p:players){
 			//if(p.intersects(ball.getCenterX(),ball.getCenterY(),0,0)){
 			if(Math.abs((p.xPos-ball.xPos)*(p.xPos-ball.xPos)+(p.yPos-ball.yPos)*(p.yPos-ball.yPos))<=(p.SIZE/2+ball.SIZE)*(p.SIZE/2+ball.SIZE)){
-				ball.hit(p.getCenterX(), p.getCenterY(), p.xSpeed, p.ySpeed);
+				ball.hit(p.xPos, p.yPos, p.xSpeed, p.ySpeed);
 			}
 			p.xSpeed=p.SPEED*Math.sin(p.i*Math.PI/250)*Math.cos(p.j*Math.PI/500);
 			p.ySpeed=p.SPEED*Math.sin(p.j*Math.PI/250)*Math.cos(p.i*Math.PI/500);
 
-			if(p.yPos<=0)										//stop player from moving out of frame
-				p.yPos+=p.movspeed;
-			if(p.yPos>=800 - p.SIZE)
-				p.yPos-=p.movspeed;
-			if(p.xPos<=0)
-				p.xPos+=p.movspeed;
-			if(p.xPos >= 1200 - p.SIZE)
-				p.xPos-=p.movspeed;
-
-			p.setCenterY(p.yPos+=p.ySpeed);						//move player
-			p.setCenterX(p.xPos+=p.xSpeed);
+			//move player
+			if(p.ySpeed<0&&p.yPos+p.ySpeed<p.SIZE/2)p.yPos=p.SIZE/2;
+			else if(p.ySpeed>0&&p.yPos+p.ySpeed>800-p.SIZE/2)p.yPos=800-p.SIZE/2;
+			else p.yPos=p.yPos+p.ySpeed;
+			if(p.xSpeed<0&&p.xPos+p.xSpeed<p.SIZE/2)p.xPos=p.SIZE/2;
+			else if(p.xSpeed>0&&p.xPos+p.xSpeed>1200-p.SIZE/2)p.xPos=1200-p.SIZE/2;
+			else p.xPos=p.xPos+p.xSpeed;
 
 			if(p.i>2)p.i-=2;			//slower
 			else if(p.i<-2)p.i+=2;
@@ -167,7 +163,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	}
 	Main() {
         frame = new JFrame("Football");
-        frame.setSize(width, height);
+        frame.setSize(width+5, height+30);
         frame.setLocation(200, 20);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -179,9 +175,9 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
 		// Draw bounds
 		topBound=new Shapes(50,20,1100,10);
-		botBound=new Shapes(50,740,1100,10);
-		leftBound=new Shapes(50,20,10,730);
-		rightBound=new Shapes(1140,20,10,730);
+		botBound=new Shapes(50,770,1100,10);
+		leftBound=new Shapes(50,20,10,750);
+		rightBound=new Shapes(1140,20,10,750);
 		
         // Initialize players
         players = new Player[PLAYER_COUNT];
@@ -241,15 +237,13 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		if(a=='K'){
 			if(!menuBar.isVisible()){
 				menuBar.setVisible(true);
-				height+=20;
-				frame.setSize(width,height);
+				frame.setSize(width+5,height+50);
 			}
 		}
 		if(a=='L'){
 			if(menuBar.isVisible()){
 				menuBar.setVisible(false);
-				height-=20;
-				frame.setSize(width,height);
+				frame.setSize(width+5,height+30);
 			}
 		}
 		
@@ -302,12 +296,12 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			ball.setCenterY(height/2);
 		}else if((JMenuItem)(e.getSource())==m2r1){
 			width=1200;
-			height=820;
-	        frame.setSize(width, height);
+			height=800;
+	        frame.setSize(width+5, height+50);
         }else if((JMenuItem)(e.getSource())==m2r2){
 	        width=800;
-	        height=620;
-	        frame.setSize(width,height);
+	        height=600;
+	        frame.setSize(width+5,height+50);
         }
     }
 	public void itemStateChanged(ItemEvent e) {
