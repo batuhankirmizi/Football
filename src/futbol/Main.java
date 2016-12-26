@@ -11,10 +11,10 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	static int width=1200;
 	static int height=800;
 	static double target_fps=60;
-	static int fps=60;
-	static int frameCount=60;
-	static Set<Integer> pressed=new HashSet<>();
-	static short tekcift=0;
+	static short fps=60;
+	static short frameCount=60;
+	static Set<Short> pressed=new HashSet<>();
+	static byte tekcift=0;
 	private static JFrame frame;
 	private static Player[] players;
 	private static Ball ball;
@@ -28,7 +28,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	private static Direk trDirek;
 	private static Direk brDirek;
 	private static Shapes rightBound2;
-	private final int PLAYER_COUNT=2;
+	private final byte PLAYER_COUNT=2;
 	JMenuItem m11;
 	JMenuItem m21;
 	JMenuItem m2r1;
@@ -267,7 +267,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
 	@Override
 	public void keyPressed(KeyEvent e){
-		int a=e.getKeyCode();
+		short a=(short)e.getKeyCode();
 		pressed.add(a);
 		if(a=='K'){
 			if(!menuBar.isVisible()){
@@ -287,7 +287,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	@Override
 	public void keyReleased(KeyEvent e){
 
-		pressed.remove(e.getKeyCode());
+		pressed.remove((short)e.getKeyCode());
 	}
 
 	public JMenuBar menuBarimiz(){

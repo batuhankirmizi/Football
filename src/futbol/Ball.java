@@ -8,7 +8,7 @@ class Ball extends Circle{
     double yPos;
     double xSpeed = 0;
     double ySpeed = 0;
-    final int SIZE=15;
+    final byte SIZE=15;
     double slow=0.35;
 	double slowX=0;
 	double slowY=0;

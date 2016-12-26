@@ -6,20 +6,19 @@ import java.awt.*;
 
 class Player extends Circle {
 	String name;
-	final int SIZE = 40;
-	final int SPEED = 6;
-	public double movspeed=8;
+	final byte SIZE = 40;
+	final byte SPEED = 6;
 	public Color color=Color.cyan;
 	double xPos;
 	double xSpeed=0;
-	int i=0;
+	byte i=0;
 	double yPos;
 	double ySpeed=0;
-	int j=0;
-	int up;
-	int down;
-	int left;
-	int right;
+	byte j=0;
+	short up;
+	short down;
+	short left;
+	short right;
 
 	Player(String name, double xPos, double yPos) {
 		this.name = name;

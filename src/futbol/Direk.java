@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 class Direk extends Circle {
 	public static ArrayList<Direk> direkler=new ArrayList<>();
-	final int SIZE=10;
+	final byte SIZE=10;
 	double xPos;
 	double yPos;
 
