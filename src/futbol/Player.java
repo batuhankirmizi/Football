@@ -7,8 +7,9 @@ import java.awt.*;
 class Player extends Circle {
 	String name;
 	final int SIZE = 40;
-	final int SPEED = 8;
+	final int SPEED = 6;
 	public double movspeed=8;
+	public Color color=Color.cyan;
 	double xPos;
 	double xSpeed=0;
 	int i=0;
@@ -34,7 +35,7 @@ class Player extends Circle {
 		g.fillOval((int)xPos*(Main.width)/1200, (int)(yPos*(Main.height-(Main.menuBar.isVisible()?+20:0)))/800, (int)SIZE*Main.width/1200, (int)SIZE*Main.width/1200);
 		*/
 
-		g.setColor(Color.ORANGE);
+		g.setColor(color);
 		g.fillOval((int)(xPos-SIZE/2)*(Main.width)/1200, (int)((yPos-SIZE/2)*(Main.height))/800, (int)SIZE*Main.width/1200, (int)SIZE*Main.width/1200);
 
 	}
