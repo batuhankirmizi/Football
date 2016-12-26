@@ -6,15 +6,15 @@ import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Main extends JPanel implements KeyListener, ActionListener, ItemListener{
-	public static JMenuBar menuBar;
+public class Main extends JPanel implements KeyListener, ActionListener, ItemListener {
+	private static JMenuBar menuBar;
 	static int width=1200;
 	static int height=800;
-	static double target_fps=60;
-	static short fps=60;
-	static short frameCount=60;
-	static Set<Short> pressed=new HashSet<>();
-	static byte tekcift=0;
+	private static double target_fps=60;
+	private static short fps=60;
+	private static short frameCount=60;
+	private static Set<Short> pressed=new HashSet<>();
+	private static byte tekcift=0;
 	private static JFrame frame;
 	private static Player[] players;
 	private static Ball ball;
@@ -29,11 +29,13 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	private static Direk brDirek;
 	private static Shapes rightBound2;
 	private final byte PLAYER_COUNT=2;
-	JMenuItem m11;
-	JMenuItem m21;
-	JMenuItem m2r1;
-	JMenuItem m2r2;
-	boolean showStats=false;
+	private JMenuItem m11;
+	private JMenuItem m21;
+	private JMenuItem m2r1;
+	private JMenuItem m2r2;
+	private boolean showStats=false;
+	private static byte t1Score = 0;
+	private static byte t2Score = 0;
 
 	Main(){
 		frame=new JFrame("Football");
@@ -120,7 +122,6 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			if(now-lastUpdateTime>TIME_BETWEEN_UPDATES){
 				lastUpdateTime=now-TIME_BETWEEN_UPDATES;
 			}
-			float interpolation=Math.min(1.0f, (float) ((now-lastUpdateTime)/TIME_BETWEEN_UPDATES));
 			frame.repaint();
 			lastRenderTime=now;
 			//Update the frames we got.
@@ -136,29 +137,44 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 				Thread.yield();
 				//This stops the app from consuming all your CPU. It makes this slightly less accurate, but is worth it.
 				//You can remove this line and it will still work (better), your CPU just climbs on certain OSes.
+                /*
 				try{
 					Thread.sleep(1);
-				}catch(Exception e){
-				}
+				}catch(Exception e){ }
+				*/
 				now=System.nanoTime();
 
 			}
 		}
 	}
 
-	public static void gameCodes(){
+    static boolean goal = true;
+
+	private static void gameCodes(){
 		// hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
 		for(Direk d : Direk.direkler){
 			if(Math.abs((d.xPos-ball.xPos)*(d.xPos-ball.xPos)+(d.yPos-ball.yPos)*(d.yPos-ball.yPos))<=(d.SIZE/2+ball.SIZE)*(d.SIZE/2+ball.SIZE)){
 				ball.hit(d.xPos, d.yPos, 0, 0);
 			}
 		}
-		if(ball.xSpeed<0&&(ball.intersects(50, 20, 10, 300)||ball.intersects(50, 480, 10, 300)))
+		/*if(ball.xSpeed < 0 && (ball.intersects(0, 20, 60, 300)||ball.intersects(50, 480, 10, 300)))
 			ball.xSpeed=-ball.xSpeed;
-		if(ball.xSpeed>0&&(ball.intersects(1140, 20, 10, 300)||ball.intersects(1140, 480, 10, 300)))
-			ball.xSpeed=-ball.xSpeed;
-		if(ball.ySpeed<0&&ball.intersects(50, 20, 1100, 10)) ball.ySpeed=-ball.ySpeed;
-		if(ball.ySpeed>0&&ball.intersects(50, 770, 1100, 10)) ball.ySpeed=-ball.ySpeed;
+		if(ball.xSpeed > 0 && (ball.intersects(1140, 20, 30, 300)||ball.intersects(1140, 480, 10, 300)))
+			ball.xSpeed=-ball.xSpeed;*/
+
+        if(ball.yPos + (ball.SIZE / 2) + ball.ySpeed >= 760 && ball.ySpeed > 0) {
+            ball.ySpeed = -ball.ySpeed;
+        } else if(ball.yPos - (ball.SIZE / 2) + ball.ySpeed <= 25 && ball.ySpeed < 0) {
+            ball.ySpeed = -ball.ySpeed;
+        }
+
+        if(!(ball.yPos >= 321 && ball.yPos <= 478) && ball.xSpeed > 0 && ball.xPos + (ball.SIZE / 2) + ball.xSpeed >= 1135) {
+            ball.xSpeed = -ball.xSpeed;
+        } else if(ball.yPos >= 321 && ball.yPos <= 478) {
+
+        }
+
+
 		for(Player p : players){
 			if(Math.abs((p.xPos-ball.xPos)*(p.xPos-ball.xPos)+(p.yPos-ball.yPos)*(p.yPos-ball.yPos))<=(p.SIZE/2+ball.SIZE)*(p.SIZE/2+ball.SIZE)){
 				ball.hit(p.xPos, p.yPos, p.xSpeed, p.ySpeed);
@@ -195,8 +211,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 				if(p.i<122) p.i+=4;
 				else p.i=125;
 
-			if(tekcift==0){
-				//Ball bounce
+			if(true){
+				/*//Ball bounce
 				if((ball.xPos<=ball.SIZE)&&ball.xSpeed<0){                            //hit left
 					ball.xSpeed=-ball.xSpeed+0.2;
 					System.out.println("bounce");
@@ -210,11 +226,40 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 				} else if(ball.ySpeed>0&&(ball.yPos>=800-ball.SIZE*2-20)){    //hit bot
 					ball.ySpeed=-ball.ySpeed-0.2;
 					System.out.println("bounce");
-				}
+				}*/
+
+				// Goal condition
+                if(ball.yPos >= 321 && ball.yPos <= 478 && goal) {
+                    if(ball.xPos >= 1150 && goal) {
+                        t1Score++;
+
+                        goal = false;
+                        try {
+                            Thread.sleep(500);
+                        } catch(InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        reset();
+                        goal = true;
+                    } else if(ball.xPos <= 50 && goal) {
+                        t2Score++;
+
+                        goal = false;
+                        try {
+                            Thread.sleep(500);
+                        } catch(InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        reset();
+                        goal = true;
+                    }
+                }
 
 				//Ball move
-				ball.setCenterX(ball.getCenterX()+ball.xSpeed);
-				ball.setCenterY(ball.getCenterY()+ball.ySpeed);
+				ball.setCenterX(ball.getCenterX() + (ball.xSpeed > 0 ? Math.min(Ball.limit, ball.xSpeed) :
+                                                                      Math.max(-Ball.limit, ball.xSpeed)));
+				ball.setCenterY(ball.getCenterY() + (ball.ySpeed > 0 ? Math.min(Ball.limit, ball.ySpeed) :
+                        Math.max(-Ball.limit, ball.ySpeed)));
 
 				//Ball slows over time
 				double moveAngle;
@@ -257,6 +302,11 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		players[0].draw(g);
 		players[1].draw(g);
 		ball.draw(g);
+
+		// Draw scores
+        g.drawString(String.valueOf(t1Score / 3), getWidth() / 3, 12);
+        g.drawString(String.valueOf(t2Score / 3), getWidth() * 2 / 3, 12);
+
 		frameCount++;
 	}
 
@@ -313,27 +363,32 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		return menuBar;
 	}
 
+	private static void reset() {
+        int i=1;
+        for(Player p : players){
+            p.xSpeed=0;
+            p.ySpeed=0;
+            p.xPos=i*width/3;
+            p.yPos=height/2;
+            i++;
+        }
+        ball.setCenterX(width/2);
+        ball.setCenterY(height/2);
+        ball.xSpeed = 0;
+        ball.ySpeed = 0;
+    }
+
 	public void actionPerformed(ActionEvent e){
-		if((JMenuItem) (e.getSource())==m21){
+		if((e.getSource())==m21){
 			if(showStats) showStats=false;
 			else showStats=true;
-		} else if((JMenuItem) (e.getSource())==m11){
-			int i=1;
-			for(Player p : players){
-				p.xSpeed=0;
-				p.ySpeed=0;
-				p.xPos=i*width/3;
-				p.yPos=height/2;
-				i++;
-			}
-			i=1;
-			ball.setCenterX(width/2);
-			ball.setCenterY(height/2);
-		} else if((JMenuItem) (e.getSource())==m2r1){
+		} else if( (e.getSource())==m11){
+			reset();
+		} else if((e.getSource())==m2r1){
 			width=1200;
 			height=800;
 			frame.setSize(width+5, height+50);
-		} else if((JMenuItem) (e.getSource())==m2r2){
+		} else if( (e.getSource())==m2r2){
 			width=800;
 			height=600;
 			frame.setSize(width+5, height+50);
