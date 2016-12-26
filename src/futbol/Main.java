@@ -63,7 +63,9 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		// Initialize players
 		players=new Player[PLAYER_COUNT];
 		players[0]=new Player("Batu", width/3, height/2);
+		players[0].color=Color.RED;
 		players[1]=new Player("Aytaç", width*2/3, height/2);
+		players[1].color=Color.MAGENTA;
 
 
 		// Set control keys
@@ -172,25 +174,25 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			else if(p.xSpeed>0&&p.xPos+p.xSpeed>1200-p.SIZE/2) p.xPos=1200-p.SIZE/2;
 			else p.xPos=p.xPos+p.xSpeed;
 
-			if(p.i>2) p.i-=2;            //slower
-			else if(p.i<-2) p.i+=2;
+			if(p.i>2) p.i-=3;            //slower
+			else if(p.i<-2) p.i+=3;
 			else p.i=0;
-			if(p.j>2) p.j-=2;
-			else if(p.j<-2) p.j+=2;
+			if(p.j>2) p.j-=3;
+			else if(p.j<-2) p.j+=3;
 			else p.j=0;
 
 			if(Main.pressed.contains(p.up)&&!Main.pressed.contains(p.down))    //keylisten
-				if(p.j>-122) p.j-=3;
+				if(p.j>-122) p.j-=4;
 				else p.j=-125;
 			else if(!Main.pressed.contains(p.up)&&Main.pressed.contains(p.down))
-				if(p.j<122) p.j+=3;
+				if(p.j<122) p.j+=4;
 				else p.j=125;
 
 			if(Main.pressed.contains(p.left)&&!Main.pressed.contains(p.right))
-				if(p.i>-122) p.i-=3;
+				if(p.i>-122) p.i-=4;
 				else p.i=-125;
 			else if(!Main.pressed.contains(p.left)&&Main.pressed.contains(p.right))
-				if(p.i<122) p.i+=3;
+				if(p.i<122) p.i+=4;
 				else p.i=125;
 
 			if(tekcift==0){
