@@ -9,7 +9,7 @@ class Ball extends Circle{
     double xSpeed = 0;
     double ySpeed = 0;
     final int SIZE=15;
-    double slow=0.5;
+    double slow=0.35;
 	double slowX=0;
 	double slowY=0;
 
@@ -35,7 +35,7 @@ class Ball extends Circle{
         double xdist = this.xPos-xPos;
         this.xSpeed += xSpeed/2;
         this.ySpeed += ySpeed/2;
-        double speed = Math.sqrt(ySpeed*ySpeed+xSpeed*xSpeed)+15;
+        double speed = Math.sqrt(ySpeed*ySpeed+xSpeed*xSpeed)+10;
 		double angle = Math.atan2(ydist,xdist);
         this.xSpeed = speed*Math.cos(angle);
 		this.ySpeed = speed*Math.sin(angle);
