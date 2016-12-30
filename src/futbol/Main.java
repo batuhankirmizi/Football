@@ -157,11 +157,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 				ball.hit(d.xPos, d.yPos, 0, 0);
 			}
 		}
-		/*if(ball.xSpeed < 0 && (ball.intersects(0, 20, 60, 300)||ball.intersects(50, 480, 10, 300)))
-			ball.xSpeed=-ball.xSpeed;
-		if(ball.xSpeed > 0 && (ball.intersects(1140, 20, 30, 300)||ball.intersects(1140, 480, 10, 300)))
-			ball.xSpeed=-ball.xSpeed;*/
-
+		//bounds
         if(ball.yPos + (ball.SIZE / 2) + ball.ySpeed >= 760 && ball.ySpeed > 0) {
             ball.ySpeed = -ball.ySpeed;
         } else if(ball.yPos - (ball.SIZE / 2) + ball.ySpeed <= 25 && ball.ySpeed < 0) {
@@ -170,8 +166,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
         if(!(ball.yPos >= 321 && ball.yPos <= 478) && ball.xSpeed > 0 && ball.xPos + (ball.SIZE / 2) + ball.xSpeed >= 1135) {
             ball.xSpeed = -ball.xSpeed;
-        } else if(ball.yPos >= 321 && ball.yPos <= 478) {
-
+        } else if(!(ball.yPos >= 321 && ball.yPos <= 478) && ball.xSpeed < 0 && ball.xPos + (ball.SIZE / 2) + ball.xSpeed <= 50) {
+	        ball.xSpeed = -ball.xSpeed;
         }
 
 
