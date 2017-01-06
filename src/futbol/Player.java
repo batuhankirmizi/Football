@@ -6,7 +6,7 @@ import java.awt.*;
 
 class Player extends Circle {
 	String name;
-	final byte SIZE = 40;
+	final byte SIZE = 60;
 	final byte SPEED = 6;
 	public Color color=Color.cyan;
 	double xPos;
