@@ -9,7 +9,7 @@ class Ball extends Circle{
     double xSpeed = 0;
     double ySpeed = 0;
     final byte SIZE=15;
-    double slow=0.175;
+    double slow=0.1;
 	double slowX=0;
 	double slowY=0;
 	static final int limit = 10;
