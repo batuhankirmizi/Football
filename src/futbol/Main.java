@@ -8,6 +8,7 @@ import java.util.Set;
 
 public class Main extends JPanel implements KeyListener, ActionListener, ItemListener {
 	private static JMenuBar menuBar;
+	static double GAME_HERTZ=125.0;
 	static int width=1200;
 	static int height=800;
 	private static double target_fps=60;
@@ -33,6 +34,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	private JMenuItem m21;
 	private JMenuItem m2r1;
 	private JMenuItem m2r2;
+	private JMenuItem m2s1;
+	private JMenuItem m2s2;
 	private boolean showStats=false;
 	private static byte t1Score = 0;
 	private static byte t2Score = 0;
@@ -99,7 +102,6 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		Main m=new Main();
 
 		//interepolation things
-		final double GAME_HERTZ=125.0;
 		//Calculate how many ns each frame should take for our target game hertz.
 		final double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
 		final int MAX_UPDATES_BEFORE_RENDER=5;
@@ -157,19 +159,18 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 				ball.hit(d.xPos, d.yPos, 0, 0);
 			}
 		}
-		//bounds
+		//Horizontal bounds
         if(ball.yPos + (ball.SIZE / 2) + ball.ySpeed >= 760 && ball.ySpeed > 0) {
             ball.ySpeed = -ball.ySpeed;
         } else if(ball.yPos - (ball.SIZE / 2) + ball.ySpeed <= 25 && ball.ySpeed < 0) {
             ball.ySpeed = -ball.ySpeed;
         }
-
+		//Vertical bounds
         if(!(ball.yPos >= 321 && ball.yPos <= 478) && ball.xSpeed > 0 && ball.xPos + (ball.SIZE / 2) + ball.xSpeed >= 1135) {
             ball.xSpeed = -ball.xSpeed;
-        } else if(!(ball.yPos >= 321 && ball.yPos <= 478) && ball.xSpeed < 0 && ball.xPos + (ball.SIZE / 2) + ball.xSpeed <= 50) {
+        } else if(!(ball.yPos >= 321 && ball.yPos <= 478) && ball.xSpeed < 0 && ball.xPos + (ball.SIZE / 2) + ball.xSpeed <= 70) {
 	        ball.xSpeed = -ball.xSpeed;
         }
-
 
 		for(Player p : players){
 			if(Math.abs((p.xPos-ball.xPos)*(p.xPos-ball.xPos)+(p.yPos-ball.yPos)*(p.yPos-ball.yPos))<=(p.SIZE/2+ball.SIZE)*(p.SIZE/2+ball.SIZE)){
@@ -194,17 +195,17 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			else p.j=0;
 
 			if(Main.pressed.contains(p.up)&&!Main.pressed.contains(p.down))    //keylisten
-				if(p.j>-122) p.j-=4;
+				if(p.j>-121) p.j-=4;
 				else p.j=-125;
 			else if(!Main.pressed.contains(p.up)&&Main.pressed.contains(p.down))
-				if(p.j<122) p.j+=4;
+				if(p.j<121) p.j+=4;
 				else p.j=125;
 
 			if(Main.pressed.contains(p.left)&&!Main.pressed.contains(p.right))
-				if(p.i>-122) p.i-=4;
+				if(p.i>-121) p.i-=4;
 				else p.i=-125;
 			else if(!Main.pressed.contains(p.left)&&Main.pressed.contains(p.right))
-				if(p.i<122) p.i+=4;
+				if(p.i<121) p.i+=4;
 				else p.i=125;
 
 			if(true){
@@ -344,16 +345,24 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		m21=new JMenuItem("Show Stats");
 		m2r1=new JMenuItem("1200*800");
 		m2r2=new JMenuItem("800*600");
+		m2s1=new JMenuItem("%100");
+		m2s2=new JMenuItem("%50");
 		m21.addActionListener(this);
 		m11.addActionListener(this);
 		m2r1.addActionListener(this);
 		m2r2.addActionListener(this);
+		m2s1.addActionListener(this);
+		m2s2.addActionListener(this);
 		menu1.add(m11);
 		menu2.add(m21);
 		menu2.addSeparator();
 		menu2.add("Resolution:");
 		menu2.add(m2r1);
 		menu2.add(m2r2);
+		menu2.addSeparator();
+		menu2.add("Game speed:");
+		menu2.add(m2s1);
+		menu2.add(m2s2);
 		menuBar.add(menu1);
 		menuBar.add(menu2);
 		return menuBar;
@@ -388,6 +397,13 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			width=800;
 			height=600;
 			frame.setSize(width+5, height+50);
+		} else if(e.getSource()==m2s1){
+			GAME_HERTZ=125;
+			System.out.println(GAME_HERTZ);
+		}
+		else if(e.getSource()==m2s2){
+			GAME_HERTZ=60;
+			System.out.println(GAME_HERTZ);
 		}
 	}
 
