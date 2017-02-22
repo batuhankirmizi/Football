@@ -20,7 +20,7 @@ class Player extends Circle {
 	short left;
 	short right;
 
-	Player(String name, double xPos, double yPos) {
+	Player(String name, int xPos, int yPos) {
 		this.name = name;
 
 		this.xPos=xPos;
@@ -37,5 +37,21 @@ class Player extends Circle {
 		g.setColor(color);
 		g.fillOval((int)(xPos-SIZE/2)*(Main.width)/1200, (int)((yPos-SIZE/2)*(Main.height))/800, (int)SIZE*Main.width/1200, (int)SIZE*Main.width/1200);
 
+	}
+
+	void move(){
+		Player enem=enemy();
+		if((Main.distance(xPos+xSpeed,yPos+ySpeed,enem.xPos,enem.yPos)<=SIZE)){
+			double angel=Math.atan2(yPos-enem.yPos,xPos-enem.xPos);
+			yPos=yPos+ySpeed*Math.cos(angel);
+			xPos=xPos+xSpeed*Math.sin(angel);
+		}else{
+			yPos=yPos+ySpeed;
+			xPos=xPos+xSpeed;
+		}
+	}
+	public Player enemy(){
+		for(Player p:Main.players)if(p!=this)return p;
+		return null;
 	}
 }
