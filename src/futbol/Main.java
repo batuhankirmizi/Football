@@ -17,8 +17,9 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	private static Set<Short> pressed=new HashSet<>();
 	private static byte tekcift=0;
 	private static JFrame frame;
-	private static Player[] players;
+	public static Player[] players;
 	private static Ball ball;
+	public static short[][] fullSpace=new short[1200][800];
 	private static Shapes topBound;
 	private static Shapes botBound;
 	private static Shapes leftBound1;
@@ -173,7 +174,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
         }
 
 		for(Player p : players){
-			if(Math.abs((p.xPos-ball.xPos)*(p.xPos-ball.xPos)+(p.yPos-ball.yPos)*(p.yPos-ball.yPos))<=(p.SIZE/2+ball.SIZE)*(p.SIZE/2+ball.SIZE)){
+			if(Math.abs((p.xPos-ball.xPos)*(p.xPos-ball.xPos)+(p.yPos-ball.yPos)*(p.yPos-ball.yPos))<=(p.SIZE/2+ball.SIZE/2)*(p.SIZE/2+ball.SIZE/2)){
 				ball.hit(p.xPos, p.yPos, p.xSpeed, p.ySpeed);
 			}
 			p.xSpeed=p.SPEED*Math.sin(p.i*Math.PI/250)*Math.cos(p.j*Math.PI/500);
@@ -182,19 +183,21 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			//move player
 			if(p.ySpeed<0&&p.yPos+p.ySpeed<p.SIZE/2) p.yPos=p.SIZE/2;
 			else if(p.ySpeed>0&&p.yPos+p.ySpeed>800-p.SIZE/2) p.yPos=800-p.SIZE/2;
-			else p.yPos=p.yPos+p.ySpeed;
+			else p.move();
 			if(p.xSpeed<0&&p.xPos+p.xSpeed<p.SIZE/2) p.xPos=p.SIZE/2;
 			else if(p.xSpeed>0&&p.xPos+p.xSpeed>1200-p.SIZE/2) p.xPos=1200-p.SIZE/2;
-			else p.xPos=p.xPos+p.xSpeed;
+			else p.move();
 
-			if(p.i>2) p.i-=3;            //slower
+			//slow the ball
+			if(p.i>2) p.i-=3;
 			else if(p.i<-2) p.i+=3;
 			else p.i=0;
 			if(p.j>2) p.j-=3;
 			else if(p.j<-2) p.j+=3;
 			else p.j=0;
 
-			if(Main.pressed.contains(p.up)&&!Main.pressed.contains(p.down))    //keylisten
+			//keylisten
+			if(Main.pressed.contains(p.up)&&!Main.pressed.contains(p.down))
 				if(p.j>-121) p.j-=4;
 				else p.j=-125;
 			else if(!Main.pressed.contains(p.up)&&Main.pressed.contains(p.down))
@@ -209,46 +212,14 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 				else p.i=125;
 
 			if(true){
-				/*//Ball bounce
-				if((ball.xPos<=ball.SIZE)&&ball.xSpeed<0){                            //hit left
-					ball.xSpeed=-ball.xSpeed+0.2;
-					System.out.println("bounce");
-				} else if(ball.xSpeed>0&&(ball.xPos>=1200-(Main.menuBar.isVisible() ? 20 : 0)-ball.SIZE*2)){    //hit right
-					ball.xSpeed=-ball.xSpeed-0.2;
-					System.out.println("bounce");
-				}
-				if((ball.yPos<=ball.SIZE)&&ball.ySpeed<0){                            //hit top
-					ball.ySpeed=-ball.ySpeed+0.2;
-					System.out.println("bounce");
-				} else if(ball.ySpeed>0&&(ball.yPos>=800-ball.SIZE*2-20)){    //hit bot
-					ball.ySpeed=-ball.ySpeed-0.2;
-					System.out.println("bounce");
-				}*/
-
 				// Goal condition
                 if(ball.yPos >= 321 && ball.yPos <= 478 && goal) {
                     if(ball.xPos >= 1150 && goal) {
                         t1Score++;
-
-                        goal = false;
-                        try {
-                            Thread.sleep(500);
-                        } catch(InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        reset();
-                        goal = true;
+	                    score();
                     } else if(ball.xPos <= 50 && goal) {
                         t2Score++;
-
-                        goal = false;
-                        try {
-                            Thread.sleep(500);
-                        } catch(InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        reset();
-                        goal = true;
+	                    score();
                     }
                 }
 
@@ -409,5 +380,19 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
 	public void itemStateChanged(ItemEvent e){
 		JMenuItem source=(JMenuItem) (e.getSource());
+	}
+
+	public static void score(){
+		goal = false;
+		try {
+			Thread.sleep(500);
+		} catch(InterruptedException e) {
+			e.printStackTrace();
+		}
+		reset();
+		goal = true;
+	}
+	public static double distance(double x1, double y1, double x2, double y2){
+		return Math.sqrt(Math.abs((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)));
 	}
 }
