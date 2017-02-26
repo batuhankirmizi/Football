@@ -3,23 +3,21 @@ package futbol;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Set;
 
 public class Main extends JPanel implements KeyListener, ActionListener, ItemListener {
 	private static JMenuBar menuBar;
-	static double GAME_HERTZ=125.0;
-	static int width=1200;
-	static int height=800;
-	private static double target_fps=60;
+	static short GAME_HERTZ=125;
+	static short width=1200;
+	static short height=800;
+	private static byte target_fps=60;
 	private static short fps=60;
 	private static short frameCount=60;
-	private static Set<Short> pressed=new HashSet<>();
-	private static byte tekcift=0;
+	private static Set<Short> pressed=new TreeSet<>();
 	private static JFrame frame;
 	public static Player[] players;
 	private static Ball ball;
-	public static short[][] fullSpace=new short[1200][800];
 	private static Shapes topBound;
 	private static Shapes botBound;
 	private static Shapes leftBound1;
@@ -38,6 +36,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 	private JMenuItem m2s1;
 	private JMenuItem m2s2;
 	private boolean showStats=false;
+    static boolean goal = true;
 	private static byte t1Score = 0;
 	private static byte t2Score = 0;
 
@@ -72,12 +71,14 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		players[0].color=Color.RED;
 		players[1]=new Player("Aytaç", width*2/3, height/2);
 		players[1].color=Color.MAGENTA;
+		
+		for(Player p:players) p.enem=p.enemy();
 
 
 		// Set control keys
-		players[0].left=65;
+		players[0].left='A';
 		players[0].right='D';
-		players[0].up=87;
+		players[0].up='W';
 		players[0].down='S';
 		players[1].left=KeyEvent.VK_LEFT;
 		players[1].right=KeyEvent.VK_RIGHT;
@@ -113,7 +114,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		//Simple way of finding FPS.
 		int lastSecondTime=(int) (lastUpdateTime/1000000000);
 
-		// TODO Game loop
+		// Game loop
 		while(true){
 			double now=System.nanoTime();
 			int updateCount=0;
@@ -140,18 +141,16 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 				Thread.yield();
 				//This stops the app from consuming all your CPU. It makes this slightly less accurate, but is worth it.
 				//You can remove this line and it will still work (better), your CPU just climbs on certain OSes.
-                /*
 				try{
 					Thread.sleep(1);
 				}catch(Exception e){ }
-				*/
+				//
 				now=System.nanoTime();
 
 			}
 		}
 	}
 
-    static boolean goal = true;
 
 	private static void gameCodes(){
 		// hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
@@ -180,15 +179,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			p.xSpeed=p.SPEED*Math.sin(p.i*Math.PI/250)*Math.cos(p.j*Math.PI/500);
 			p.ySpeed=p.SPEED*Math.sin(p.j*Math.PI/250)*Math.cos(p.i*Math.PI/500);
 
-			//move player
-			if(p.ySpeed<0&&p.yPos+p.ySpeed<p.SIZE/2) p.yPos=p.SIZE/2;
-			else if(p.ySpeed>0&&p.yPos+p.ySpeed>800-p.SIZE/2) p.yPos=800-p.SIZE/2;
-			else p.move();
-			if(p.xSpeed<0&&p.xPos+p.xSpeed<p.SIZE/2) p.xPos=p.SIZE/2;
-			else if(p.xSpeed>0&&p.xPos+p.xSpeed>1200-p.SIZE/2) p.xPos=1200-p.SIZE/2;
-			else p.move();
-
-			//slow the ball
+			//slow player
 			if(p.i>2) p.i-=3;
 			else if(p.i<-2) p.i+=3;
 			else p.i=0;
@@ -210,8 +201,18 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 			else if(!Main.pressed.contains(p.left)&&Main.pressed.contains(p.right))
 				if(p.i<121) p.i+=4;
 				else p.i=125;
+				
+			//move player
+			if(p.ySpeed<0&&p.yPos+p.ySpeed<p.SIZE/2) p.yPos=p.SIZE/2;
+			else if(p.ySpeed>0&&p.yPos+p.ySpeed>800-p.SIZE/2) p.yPos=800-p.SIZE/2;
+			else p.move();
+			if(p.xSpeed<0&&p.xPos+p.xSpeed<p.SIZE/2) p.xPos=p.SIZE/2;
+			else if(p.xSpeed>0&&p.xPos+p.xSpeed>1200-p.SIZE/2) p.xPos=1200-p.SIZE/2;
+			else p.move();
+			}
 
-			if(true){
+
+			if(goal){
 				// Goal condition
                 if(ball.yPos >= 321 && ball.yPos <= 478 && goal) {
                     if(ball.xPos >= 1150 && goal) {
@@ -224,10 +225,10 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
                 }
 
 				//Ball move
-				ball.setCenterX(ball.getCenterX() + (ball.xSpeed > 0 ? Math.min(Ball.limit, ball.xSpeed) :
-                                                                      Math.max(-Ball.limit, ball.xSpeed)));
-				ball.setCenterY(ball.getCenterY() + (ball.ySpeed > 0 ? Math.min(Ball.limit, ball.ySpeed) :
-                        Math.max(-Ball.limit, ball.ySpeed)));
+				ball.xPos=ball.xPos + (ball.xSpeed > 0 ? Math.min(Ball.limit, ball.xSpeed) :
+                                                                      Math.max(-Ball.limit, ball.xSpeed));
+				ball.yPos=ball.yPos + (ball.ySpeed > 0 ? Math.min(Ball.limit, ball.ySpeed) :
+                        Math.max(-Ball.limit, ball.ySpeed));
 
 				//Ball slows over time
 				double moveAngle;
@@ -241,9 +242,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 				if(ball.ySpeed>=ball.slowY) ball.ySpeed-=ball.slowY;
 				else if(ball.ySpeed<=-ball.slowY) ball.ySpeed+=ball.slowY;
 				else ball.ySpeed=0;
-				tekcift=1;
-			} else tekcift=0;
-		}
+			}
+		
 	}
 
 	@Override
@@ -272,8 +272,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		ball.draw(g);
 
 		// Draw scores
-        g.drawString(String.valueOf(t1Score / 3), getWidth() / 3, 12);
-        g.drawString(String.valueOf(t2Score / 3), getWidth() * 2 / 3, 12);
+        g.drawString(String.valueOf(t1Score), getWidth() / 3, 12);
+        g.drawString(String.valueOf(t2Score), getWidth() * 2 / 3, 12);
 
 		frameCount++;
 	}
@@ -344,12 +344,12 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
         for(Player p : players){
             p.xSpeed=0;
             p.ySpeed=0;
-            p.xPos=i*width/3;
-            p.yPos=height/2;
+            p.xPos=i*400;
+            p.yPos=400;
             i++;
         }
-        ball.setCenterX(width/2);
-        ball.setCenterY(height/2);
+        ball.xPos=600;
+        ball.yPos=400;
         ball.xSpeed = 0;
         ball.ySpeed = 0;
     }
