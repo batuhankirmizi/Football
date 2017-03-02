@@ -5,16 +5,15 @@ import javafx.scene.shape.Circle;
 import java.awt.*;
 import java.util.ArrayList;
 
-class Direk extends Circle {
+class Direk extends Circly {
 	public static ArrayList<Direk> direkler=new ArrayList<>();
-	final byte SIZE=10;
-	double xPos;
-	double yPos;
 
 	Direk(int xPos, int yPos) {
 		this.xPos=xPos;
 		this.yPos=yPos;
 		direkler.add(this);
+		
+		SIZE=10;
 	}
 
 	void draw(Graphics g) {
