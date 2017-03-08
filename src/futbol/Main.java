@@ -5,6 +5,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.TreeSet;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Formatter;
+import java.util.Iterator;
+import java.io.*;
 
 public class Main extends JPanel implements KeyListener, ActionListener, ItemListener {
 	private static JMenuBar menuBar;
@@ -39,8 +44,33 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
     static boolean goal = true;
 	private static byte t1Score = 0;
 	private static byte t2Score = 0;
+	static File sett=new File("settings.txt");
+	static Scanner settings;
+	static Formatter f;
+	static String[] variables={"name1","name2","anan"};
+	static String name1="Batu";
+	static String name2="Aytac";
 
 	Main(){
+		try{
+			settings=new Scanner(sett);
+		}catch(FileNotFoundException e){
+			try{
+			f=new Formatter("settings.txt");
+			settings=new Scanner(sett);
+			}catch(FileNotFoundException f){
+			}
+		}
+		//while(settings.hasNext()){
+		while(settings.hasNext()){
+			Scanner srr=new Scanner(settings.nextLine()).useDelimiter("=");
+			String sasa=srr.next();
+			String sasa2=srr.next();
+			System.out.println(sasa+" to "+sasa2);
+			try{
+				this.getClass().getDeclaredField(sasa).set(this,sasa2);
+			} catch (Throwable e) {System.out.println("haha"); }
+		}
 		frame=new JFrame("Football");
 		frame.setSize(width+5, height+30);
 		frame.setLocation(200, 20);
@@ -56,10 +86,10 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		topBound=new Shapes(50, 20, 1100, 10);
 		botBound=new Shapes(50, 770, 1100, 10);
 		leftBound1=new Shapes(50, 20, 10, 300);
-		tlDirek=new Direk(55, 321);
-		blDirek=new Direk(55, 478);
-		trDirek=new Direk(1145, 321);
-		brDirek=new Direk(1145, 478);
+		tlDirek=new Direk(54, 321);
+		blDirek=new Direk(54, 478);
+		trDirek=new Direk(1144, 321);
+		brDirek=new Direk(1144, 478);
 		leftBound2=new Shapes(50, 480, 10, 300);
 		rightBound1=new Shapes(1140, 20, 10, 300);
 		rightBound2=new Shapes(1140, 480, 10, 300);
@@ -67,9 +97,9 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
 		// Initialize players
 		players=new Player[PLAYER_COUNT];
-		players[0]=new Player("Batu", width/3, height/2);
+		players[0]=new Player(name1, width/3, height/2);
 		players[0].color=Color.RED;
-		players[1]=new Player("Aytaç", width*2/3, height/2);
+		players[1]=new Player(name2, width*2/3, height/2);
 		players[1].color=Color.MAGENTA;
 		
 		for(Player p:players) p.enem=p.enemy();
@@ -87,6 +117,7 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 
 		// Initialize ball
 		ball=new Ball();
+		ball.color=Color.cyan;
 
 		setLayout(null);
 		setSize(width, height);
@@ -272,8 +303,8 @@ public class Main extends JPanel implements KeyListener, ActionListener, ItemLis
 		ball.draw(g);
 
 		// Draw scores
-        g.drawString(String.valueOf(t1Score), getWidth() / 3, 12);
-        g.drawString(String.valueOf(t2Score), getWidth() * 2 / 3, 12);
+        g.drawString(players[0].name+" "+String.valueOf(t1Score), getWidth() / 3, 12);
+        g.drawString(players[1].name+" "+String.valueOf(t2Score), getWidth() * 2 / 3, 12);
 
 		frameCount++;
 	}
