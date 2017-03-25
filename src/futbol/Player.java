@@ -1,7 +1,7 @@
 package futbol;
 
 class Player extends Circly{
-	final byte SPEED=6;
+	final byte SPEED=5;
 	String name;
 	byte i=0;
 	byte j=0;

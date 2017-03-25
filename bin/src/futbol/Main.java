@@ -35,6 +35,13 @@ public class Main extends Engine{
 	}
 
 	public  void initialize(){
+		// Initialize players
+		players=new Player[PLAYER_COUNT];
+		players[0]=new Player(name1, width/3, height/2);
+		players[0].color=Color.RED;
+		players[1]=new Player(name2, width*2/3, height/2);
+		players[1].color=Color.MAGENTA;
+
 		// Draw bounds
 		topBound=new Shapes(50, 20, 1100, 10);
 		botBound=new Shapes(50, 770, 1100, 10);
@@ -47,13 +54,6 @@ public class Main extends Engine{
 		rightBound1=new Shapes(1140, 20, 10, 300);
 		rightBound2=new Shapes(1140, 480, 10, 300);
 
-		// Initialize players
-		players=new Player[PLAYER_COUNT];
-		players[0]=new Player(name1, width/3, height/2);
-		players[0].color=Color.RED;
-		players[1]=new Player(name2, width*2/3, height/2);
-		players[1].color=Color.MAGENTA;
-		
 		for(Player p:players) p.enem=p.enemy();
 
 		// Set control keys
@@ -74,7 +74,10 @@ public class Main extends Engine{
 	public  void gameCodes(){
 		// hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
 		for(Direk d : Direk.direkler){
-			if(Math.abs((d.xPos-ball.xPos)*(d.xPos-ball.xPos)+(d.yPos-ball.yPos)*(d.yPos-ball.yPos))<=(d.SIZE/2+ball.SIZE)*(d.SIZE/2+ball.SIZE)){
+			if(distance(d,ball)<=(d.SIZE/2+ball.SIZE)){
+				d.color=d.teamColor;
+				new Timer(200){public void run(){super.run();d.color=Direk.defColor;}}.start();
+				System.out.println("direk hit");
 				ball.hit(d.xPos, d.yPos, 0, 0);
 			}
 		}
@@ -92,33 +95,34 @@ public class Main extends Engine{
         }
 
 		for(Player p : players){
-			if(Math.abs((p.xPos-ball.xPos)*(p.xPos-ball.xPos)+(p.yPos-ball.yPos)*(p.yPos-ball.yPos))<=(p.SIZE/2+ball.SIZE/2)*(p.SIZE/2+ball.SIZE/2)){
+			if(distance(p,ball)<=(p.SIZE/2+ball.SIZE/2)){
 				ball.hit(p);
 			}
+			//set player speed
 			p.xSpeed=p.SPEED*Math.sin(p.i*Math.PI/250)*Math.cos(p.j*Math.PI/500);
 			p.ySpeed=p.SPEED*Math.sin(p.j*Math.PI/250)*Math.cos(p.i*Math.PI/500);
 
 			//slow player
-			if(p.i>2) p.i-=3;
-			else if(p.i<-2) p.i+=3;
+			if(p.i>2) p.i-=2;
+			else if(p.i<-2) p.i+=2;
 			else p.i=0;
-			if(p.j>2) p.j-=3;
-			else if(p.j<-2) p.j+=3;
+			if(p.j>2) p.j-=2;
+			else if(p.j<-2) p.j+=2;
 			else p.j=0;
 
 			//keylisten
 			if(pressed.contains(p.up)&&!pressed.contains(p.down))
-				if(p.j>-121) p.j-=4;
+				if(p.j>-122) p.j-=3;
 				else p.j=-125;
 			else if(!pressed.contains(p.up)&&pressed.contains(p.down))
-				if(p.j<121) p.j+=4;
+				if(p.j<122) p.j+=3;
 				else p.j=125;
 
 			if(pressed.contains(p.left)&&!pressed.contains(p.right))
-				if(p.i>-121) p.i-=4;
+				if(p.i>-122) p.i-=3;
 				else p.i=-125;
 			else if(!pressed.contains(p.left)&&pressed.contains(p.right))
-				if(p.i<121) p.i+=4;
+				if(p.i<122) p.i+=3;
 				else p.i=125;
 				
 			//move player
@@ -160,7 +164,6 @@ public class Main extends Engine{
 				if(ball.ySpeed>=ball.slowY) ball.ySpeed-=ball.slowY;
 				else if(ball.ySpeed<=-ball.slowY) ball.ySpeed+=ball.slowY;
 				else ball.ySpeed=0;
-		
 	}
 
 	public void paintComponent(Graphics g){
@@ -191,7 +194,6 @@ public class Main extends Engine{
 
 		frameCount++;
 	}
-
 	public  void reset() {
         int i=1;
         for(Player p : players){
@@ -205,16 +207,29 @@ public class Main extends Engine{
         ball.yPos=400;
         ball.xSpeed = 0;
         ball.ySpeed = 0;
+		tlDirek.color=Color.white;
+		blDirek.color=Color.white;
+		trDirek.color=Color.white;
+		brDirek.color=Color.white;
         goal=true;
     }
-
 	public  void score(boolean team1){
 		goal = false;
-		if(team1)t1Score++;
-		else t2Score++;
+		if(team1){
+			trDirek.color=players[1].color;
+			brDirek.color=players[1].color;
+			t1Score++;
+		}else{
+			tlDirek.color=players[0].color;
+			blDirek.color=players[0].color;
+			t2Score++;
+		}
 		new Timer(1500){public void run(){super.run();reset();}}.start();
 	}
 	public static double distance(double x1, double y1, double x2, double y2){
 		return Math.sqrt(Math.abs((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)));
+	}
+	public static double distance(Circly p1, Circly p2){
+		return Math.sqrt(Math.abs((p1.xPos-p2.xPos)*(p1.xPos-p2.xPos)+(p1.yPos-p2.yPos)*(p1.yPos-p2.yPos)));
 	}
 }

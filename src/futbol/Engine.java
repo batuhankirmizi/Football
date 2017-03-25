@@ -132,7 +132,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 				//This stops the app from consuming all your CPU. It makes this slightly less accurate, but is worth it.
 				//You can remove this line and it will still work (better), your CPU just climbs on certain OSes.
 				try{
-					Thread.sleep(4);
+					Thread.sleep(8);
 				}catch(Exception e){
 				}
 				//
