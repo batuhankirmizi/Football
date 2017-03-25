@@ -1,8 +1,8 @@
 package futbol;
 
-class Player extends Circly {
+class Player extends Circly{
+	final byte SPEED=6;
 	String name;
-	final byte SPEED = 6;
 	byte i=0;
 	byte j=0;
 	short up;
@@ -11,10 +11,10 @@ class Player extends Circly {
 	short right;
 	Player enem;
 
-	Player(String name, int xPos, int yPos) {
+	Player(String name,int xPos,int yPos){
 		super();
 		SIZE=60;
-		this.name = name;
+		this.name=name;
 		this.xPos=xPos;
 		this.yPos=yPos;
 	}
@@ -36,8 +36,9 @@ class Player extends Circly {
 			xPos=xPos+xSpeed;
 		}
 	}
+
 	public Player enemy(){
-		for(Player p:Main.players)if(p!=this)return p;
+		for(Player p : Main.players) if(p!=this) return p;
 		return null;
 	}
 }
