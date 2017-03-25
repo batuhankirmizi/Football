@@ -1,6 +1,5 @@
 package futbol;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -21,7 +20,6 @@ public class Main extends Engine{
     static boolean goal = true;
 	private static byte t1Score = 0;
 	private static byte t2Score = 0;
-	static String[] variables={"name1","name2","anan"};
 	static String name1="Batu";
 	static String name2="Aytac";
 
@@ -95,7 +93,7 @@ public class Main extends Engine{
 
 		for(Player p : players){
 			if(Math.abs((p.xPos-ball.xPos)*(p.xPos-ball.xPos)+(p.yPos-ball.yPos)*(p.yPos-ball.yPos))<=(p.SIZE/2+ball.SIZE/2)*(p.SIZE/2+ball.SIZE/2)){
-				ball.hit(p.xPos, p.yPos, p.xSpeed, p.ySpeed);
+				ball.hit(p);
 			}
 			p.xSpeed=p.SPEED*Math.sin(p.i*Math.PI/250)*Math.cos(p.j*Math.PI/500);
 			p.ySpeed=p.SPEED*Math.sin(p.j*Math.PI/250)*Math.cos(p.i*Math.PI/500);
@@ -135,15 +133,14 @@ public class Main extends Engine{
 
 			if(goal){
 				// Goal condition
-                if(ball.yPos >= 321 && ball.yPos <= 478 && goal) {
-                    if(ball.xPos >= 1150 && goal) {
-                        t1Score++;
-	                    score();
-                    } else if(ball.xPos <= 50 && goal) {
-                        t2Score++;
-	                    score();
-                    }
-                }
+				if(ball.yPos>=321&&ball.yPos<=478&&goal){
+					if(ball.xPos>=1150&&goal){
+						score(true);
+					}else if(ball.xPos<=50&&goal){
+						score(false);
+					}
+				}
+			}
 
 				//Ball move
 				ball.xPos=ball.xPos + (ball.xSpeed > 0 ? Math.min(Ball.limit, ball.xSpeed) :
@@ -163,7 +160,6 @@ public class Main extends Engine{
 				if(ball.ySpeed>=ball.slowY) ball.ySpeed-=ball.slowY;
 				else if(ball.ySpeed<=-ball.slowY) ball.ySpeed+=ball.slowY;
 				else ball.ySpeed=0;
-			}
 		
 	}
 
@@ -211,17 +207,14 @@ public class Main extends Engine{
         ball.yPos=400;
         ball.xSpeed = 0;
         ball.ySpeed = 0;
+        goal=true;
     }
 
-	public  void score(){
+	public  void score(boolean team1){
 		goal = false;
-		try {
-			Thread.sleep(500);
-		} catch(InterruptedException e) {
-			e.printStackTrace();
-		}
-		reset();
-		goal = true;
+		if(team1)t1Score++;
+		else t2Score++;
+		new Timer(1500){public void run(){super.run();reset();}}.start();
 	}
 	public static double distance(double x1, double y1, double x2, double y2){
 		return Math.sqrt(Math.abs((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)));
