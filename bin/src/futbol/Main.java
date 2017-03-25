@@ -166,12 +166,10 @@ public class Main extends Engine{
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		if(showStats){
-			g.drawString("FPS: "+fps+"\n", 5, 10);
 			g.drawString("p1 speed: "+Math.sqrt(players[0].xSpeed*players[0].xSpeed+players[0].ySpeed*players[0].ySpeed), 5, 20);
 			g.drawString("p1 x: "+players[0].xSpeed+" y: "+players[0].ySpeed, 5, 30);
 			g.drawString("p2 speed: "+Math.sqrt(players[1].xSpeed*players[1].xSpeed+players[1].ySpeed*players[1].ySpeed), 5, 40);
 			g.drawString("ball speed: "+Math.sqrt(ball.xSpeed*ball.xSpeed+ball.ySpeed*ball.ySpeed), 5, 50);
-
 		}
 		topBound.draw(g);
 		botBound.draw(g);

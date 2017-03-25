@@ -22,14 +22,14 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	File sett=new File("settings.txt");
 	Scanner settings;
 	Formatter f;
-	private JMenuBar menuBar;
+	public JMenuBar menuBar;
 	private byte target_fps=60;
-	private JMenuItem m11;
-	private JMenuItem m21;
-	private JMenuItem m2r1;
-	private JMenuItem m2r2;
-	private JMenuItem m2s1;
-	private JMenuItem m2s2;
+	public JMenuItem m11;
+	public JMenuItem m21;
+	public JMenuItem m2r1;
+	public JMenuItem m2r2;
+	public JMenuItem m2s1;
+	public JMenuItem m2s2;
 	public boolean showStats=false;
 
 	Engine(){
@@ -121,7 +121,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			//Update the frames we got.
 			int thisSecond=(int)(lastUpdateTime/1000000000);
 			if(thisSecond>lastSecondTime){
-				System.out.println("NEW SECOND "+thisSecond+" "+frameCount);
+				//System.out.println("NEW SECOND "+thisSecond+" "+frameCount);
 				fps=frameCount;
 				frameCount=0;
 				lastSecondTime=thisSecond;
@@ -132,7 +132,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 				//This stops the app from consuming all your CPU. It makes this slightly less accurate, but is worth it.
 				//You can remove this line and it will still work (better), your CPU just climbs on certain OSes.
 				try{
-					Thread.sleep(2);
+					Thread.sleep(4);
 				}catch(Exception e){
 				}
 				//
@@ -156,12 +156,12 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		m2r2=new JMenuItem("800*600");
 		m2s1=new JMenuItem("%100");
 		m2s2=new JMenuItem("%50");
-		m21.addActionListener(engine);
-		m11.addActionListener(engine);
-		m2r1.addActionListener(engine);
-		m2r2.addActionListener(engine);
-		m2s1.addActionListener(engine);
-		m2s2.addActionListener(engine);
+		m21.addActionListener(this);
+		m11.addActionListener(this);
+		m2r1.addActionListener(this);
+		m2r2.addActionListener(this);
+		m2s1.addActionListener(this);
+		m2s2.addActionListener(this);
 		menu1.add(m11);
 		menu2.add(m21);
 		menu2.addSeparator();
@@ -176,7 +176,12 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		menuBar.add(menu2);
 		return menuBar;
 	}
-
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		if(showStats){
+			g.drawString("FPS: "+fps+"\n",5,10);
+		}
+	}
 	public void keyTyped(KeyEvent e){}
 	public void keyPressed(KeyEvent e){
 		short a=(short)e.getKeyCode();
@@ -198,7 +203,9 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		pressed.remove((short)e.getKeyCode());
 	}
 	public void actionPerformed(ActionEvent e){
+		System.out.println("pressed something");
 		if((e.getSource())==m21){
+			System.out.println("show stats");
 			if(showStats) showStats=false;
 			else showStats=true;
 		}else if((e.getSource())==m11){

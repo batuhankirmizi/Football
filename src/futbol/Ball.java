@@ -25,7 +25,6 @@ class Ball extends Circly{
 		this.ySpeed+=ySpeed/2;    //topun oyuncunun hareket yönüne doğru da hareket etmesini sağlar
 	}
 	void hit(Player p){
-		System.out.println("hit");
 		double ydist=this.yPos-p.yPos;
 		double xdist=this.xPos-p.xPos;
 		this.xSpeed+=p.xSpeed/2;
