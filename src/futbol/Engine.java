@@ -115,17 +115,14 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 					frameCount=0;
 				}
 			}
-		}.start();
+		}.start(); //fps and ups updater
 		// Game loop
 		while(true){
 			double now=System.nanoTime();
-			while(now-lastUpdateTime>TIME_BETWEEN_UPDATES){
+			if(now-lastUpdateTime>TIME_BETWEEN_UPDATES){
 				gameCodes();
 				lastUpdateTime+=TIME_BETWEEN_UPDATES;
 				updateCount++;
-			}
-			if(now-lastUpdateTime>TIME_BETWEEN_UPDATES){
-				lastUpdateTime=now-TIME_BETWEEN_UPDATES;
 			}
 			if(now-lastRenderTime>TARGET_TIME_BETWEEN_RENDERS){
 				frame.repaint();
@@ -186,6 +183,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	}
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
+		frameCount++;
 		if(showStats){
 			g.drawString("FPS: "+fps+"    UPS:"+ups,5,10);
 		}

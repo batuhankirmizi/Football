@@ -28,7 +28,6 @@ public class Main extends Engine{
 		engine=new Main();
 		engine.run();
 	}
-
 	Main(){
 		super();
 		System.out.println("sub created");
@@ -70,15 +69,12 @@ public class Main extends Engine{
 		ball=new Ball();
 		ball.color=Color.cyan;
 	}
-
 	public  void gameCodes(){
-		// hit(PlayerXPos, PlayerYPos, PlayerXSpeed, PlayerYSpeed)
 		for(Direk d : Direk.direkler){
 			if(distance(d,ball)<=(d.SIZE/2+ball.SIZE)){
 				d.color=d.teamColor;
 				new Timer(200){public void run(){super.run();if(goal)d.color=Direk.defColor;}}.start();
-				System.out.println("direk hit");
-				ball.hit(d.xPos, d.yPos, 0, 0);
+				ball.hit(d);
 			}
 		}
 		//Horizontal bounds
@@ -165,7 +161,6 @@ public class Main extends Engine{
 				else if(ball.ySpeed<=-ball.slowY) ball.ySpeed+=ball.slowY;
 				else ball.ySpeed=0;
 	}
-
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		if(showStats){
@@ -191,8 +186,6 @@ public class Main extends Engine{
 		// Draw scores
         g.drawString(players[0].name+" "+String.valueOf(t1Score), getWidth() / 3, 12);
         g.drawString(players[1].name+" "+String.valueOf(t2Score), getWidth() * 2 / 3, 12);
-
-		frameCount++;
 	}
 	public  void reset() {
         int i=1;

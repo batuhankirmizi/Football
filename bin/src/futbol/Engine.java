@@ -13,9 +13,9 @@ import java.util.TreeSet;
 public abstract class Engine extends JPanel implements KeyListener, ActionListener, ItemListener{
 	public static Engine engine;
 	public short fps=60;
-	public short frameCount=10;
+	public short frameCount=60;
 	public short ups=120;
-	public short updateCount=10;
+	public short updateCount=120;
 	public Set<Short> pressed=new TreeSet<>();
 	public  JFrame frame;
 	short GAME_HERTZ=120;
@@ -74,7 +74,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			}catch(FileNotFoundException f){
 			}
 		}
-		//while(settings.hasNext()){
 		while(settings.hasNext()){
 			Scanner srr=new Scanner(settings.nextLine()).useDelimiter("=");
 			String sasa=srr.next();
@@ -116,17 +115,14 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 					frameCount=0;
 				}
 			}
-		}.start();
+		}.start(); //fps and ups updater
 		// Game loop
 		while(true){
 			double now=System.nanoTime();
-			while(now-lastUpdateTime>TIME_BETWEEN_UPDATES){
+			if(now-lastUpdateTime>TIME_BETWEEN_UPDATES){
 				gameCodes();
 				lastUpdateTime+=TIME_BETWEEN_UPDATES;
 				updateCount++;
-			}
-			if(now-lastUpdateTime>TIME_BETWEEN_UPDATES){
-				lastUpdateTime=now-TIME_BETWEEN_UPDATES;
 			}
 			if(now-lastRenderTime>TARGET_TIME_BETWEEN_RENDERS){
 				frame.repaint();
@@ -187,6 +183,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	}
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
+		frameCount++;
 		if(showStats){
 			g.drawString("FPS: "+fps+"    UPS:"+ups,5,10);
 		}

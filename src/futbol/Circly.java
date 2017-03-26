@@ -1,7 +1,6 @@
 package futbol;
 
 import javafx.scene.shape.Circle;
-
 import java.awt.*;
 
 public class Circly extends Circle{
