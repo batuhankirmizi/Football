@@ -16,8 +16,8 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public short frameCount=60;
 	public short ups=120;
 	public short updateCount=120;
-	public Set<Short> pressed=new TreeSet<>();
-	public  JFrame frame;
+	public final Set<Short> pressed=new TreeSet<>();
+	public final JFrame frame;
 	short GAME_HERTZ=120;
 	static short width=1200;
 	static short height=800;
@@ -97,7 +97,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		frame.add(this);
 		frame.setVisible(true);
 	}
-
 	public void run(){
 		double lastUpdateTime=System.nanoTime();
 		double lastRenderTime=System.nanoTime();
@@ -135,7 +134,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			}
 		}
 	}
-
 
 	public abstract void initialize();
 	public abstract void gameCodes();
@@ -246,7 +244,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public void itemStateChanged(ItemEvent e){
 		JMenuItem source=(JMenuItem)(e.getSource());
 	}
-	public static void main(String[] args){
+	public static void main(){
 		System.out.println("engine class ran123");
 		Main.main();
 	}

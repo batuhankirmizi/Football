@@ -23,8 +23,8 @@ public class Main extends Engine{
 	static String name1="Batu";
 	static String name2="Aytac";
 
-	public static void main(){
-		System.out.println("started");
+	public static void main(String[] args){
+		System.out.println("Main main() started");
 		engine=new Main();
 		engine.run();
 	}
@@ -68,13 +68,14 @@ public class Main extends Engine{
 		// Initialize ball
 		ball=new Ball();
 		ball.color=Color.cyan;
+
+		System.out.println("objects initialized");
 	}
 	public  void gameCodes(){
 		for(Direk d : Direk.direkler){
 			if(distance(d,ball)<=(d.SIZE/2+ball.SIZE)){
 				d.color=d.teamColor;
 				new Timer(200){public void run(){super.run();if(goal)d.color=Direk.defColor;}}.start();
-				System.out.println("direk hit");
 				ball.hit(d);
 			}
 		}
