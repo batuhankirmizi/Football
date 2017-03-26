@@ -14,8 +14,8 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public static Engine engine;
 	public short fps=60;
 	public short frameCount=60;
-	public short ups=60;
-	public short updateCount=60;
+	public short ups=120;
+	public short updateCount=120;
 	public Set<Short> pressed=new TreeSet<>();
 	public  JFrame frame;
 	short GAME_HERTZ=120;
@@ -37,7 +37,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public JMenuItem m2f3;
 	public boolean showStats=false;
 	double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
-	int MAX_UPDATES_BEFORE_RENDER=5;
 	double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 
 	Engine(){
@@ -75,7 +74,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			}catch(FileNotFoundException f){
 			}
 		}
-		//while(settings.hasNext()){
 		while(settings.hasNext()){
 			Scanner srr=new Scanner(settings.nextLine()).useDelimiter("=");
 			String sasa=srr.next();
@@ -101,13 +99,23 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	}
 
 	public void run(){
-
-		//interepolation things
-		//Calculate how many ns each frame should take for our target game hertz.
 		double lastUpdateTime=System.nanoTime();
 		double lastRenderTime=System.nanoTime();
-		//Simple way of finding FPS.
-		int lastSecondTime=(int)(lastUpdateTime/1000000000);
+		new Timer(1000){
+			@Override
+			public void run(){
+				while(true){
+					try{
+						Thread.sleep(time);
+					}catch(Exception e){
+					}
+					ups=updateCount;
+					updateCount=0;
+					fps=frameCount;
+					frameCount=0;
+				}
+			}
+		}.start();
 		// Game loop
 		while(true){
 			double now=System.nanoTime();
@@ -123,27 +131,10 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 				frame.repaint();
 				lastRenderTime=now;
 			}
-			//Update the frames we got.
-			int thisSecond=(int)(lastUpdateTime/1000000000);
-			if(thisSecond>lastSecondTime){
-				//System.out.println("NEW SECOND "+thisSecond+" "+frameCount);
-				ups=updateCount;
-				updateCount=0;
-				fps=frameCount;
-				frameCount=0;
-				lastSecondTime=thisSecond;
-			}
-			//Yield until it has been at least the target time between renders. This saves the CPU from hogging.
-			while(now-lastRenderTime<TARGET_TIME_BETWEEN_RENDERS&&now-lastUpdateTime<TIME_BETWEEN_UPDATES){
-				Thread.yield();
-				//This stops the app from consuming all your CPU. It makes this slightly less accurate, but is worth it.
-				//You can remove this line and it will still work (better), your CPU just climbs on certain OSes.
-				try{
-					Thread.sleep(1);
-				}catch(Exception e){
-				}
-				//
-				now=System.nanoTime();
+			Thread.yield();
+			try{
+				Thread.sleep(3);
+			}catch(Exception e){
 			}
 		}
 	}
