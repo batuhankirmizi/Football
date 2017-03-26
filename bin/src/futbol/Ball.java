@@ -1,7 +1,7 @@
 package futbol;
 
 class Ball extends Circly{
-	static final int limit=25;
+	static final int limit=35;
 	double slow=0.1;
 	double slowX=0;
 	double slowY=0;

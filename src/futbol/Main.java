@@ -76,7 +76,7 @@ public class Main extends Engine{
 		for(Direk d : Direk.direkler){
 			if(distance(d,ball)<=(d.SIZE/2+ball.SIZE)){
 				d.color=d.teamColor;
-				new Timer(200){public void run(){super.run();d.color=Direk.defColor;}}.start();
+				new Timer(200){public void run(){super.run();if(goal)d.color=Direk.defColor;}}.start();
 				System.out.println("direk hit");
 				ball.hit(d.xPos, d.yPos, 0, 0);
 			}

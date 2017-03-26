@@ -14,9 +14,11 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public static Engine engine;
 	public short fps=60;
 	public short frameCount=60;
+	public short ups=60;
+	public short updateCount=60;
 	public Set<Short> pressed=new TreeSet<>();
 	public  JFrame frame;
-	short GAME_HERTZ=125;
+	short GAME_HERTZ=120;
 	static short width=1200;
 	static short height=800;
 	File sett=new File("settings.txt");
@@ -30,7 +32,13 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public JMenuItem m2r2;
 	public JMenuItem m2s1;
 	public JMenuItem m2s2;
+	public JMenuItem m2f1;
+	public JMenuItem m2f2;
+	public JMenuItem m2f3;
 	public boolean showStats=false;
+	double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
+	int MAX_UPDATES_BEFORE_RENDER=5;
+	double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 
 	Engine(){
 		System.out.println("sup created");
@@ -96,19 +104,14 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 
 		//interepolation things
 		//Calculate how many ns each frame should take for our target game hertz.
-		final double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
-		final int MAX_UPDATES_BEFORE_RENDER=5;
 		double lastUpdateTime=System.nanoTime();
 		double lastRenderTime=System.nanoTime();
-		//If we are able to get as high as this FPS, don't render again.
-		final double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 		//Simple way of finding FPS.
 		int lastSecondTime=(int)(lastUpdateTime/1000000000);
 		// Game loop
 		while(true){
 			double now=System.nanoTime();
-			int updateCount=0;
-			while(now-lastUpdateTime>TIME_BETWEEN_UPDATES&&updateCount<MAX_UPDATES_BEFORE_RENDER){
+			while(now-lastUpdateTime>TIME_BETWEEN_UPDATES){
 				gameCodes();
 				lastUpdateTime+=TIME_BETWEEN_UPDATES;
 				updateCount++;
@@ -116,12 +119,16 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			if(now-lastUpdateTime>TIME_BETWEEN_UPDATES){
 				lastUpdateTime=now-TIME_BETWEEN_UPDATES;
 			}
-			frame.repaint();
-			lastRenderTime=now;
+			if(now-lastRenderTime>TARGET_TIME_BETWEEN_RENDERS){
+				frame.repaint();
+				lastRenderTime=now;
+			}
 			//Update the frames we got.
 			int thisSecond=(int)(lastUpdateTime/1000000000);
 			if(thisSecond>lastSecondTime){
 				//System.out.println("NEW SECOND "+thisSecond+" "+frameCount);
+				ups=updateCount;
+				updateCount=0;
 				fps=frameCount;
 				frameCount=0;
 				lastSecondTime=thisSecond;
@@ -132,7 +139,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 				//This stops the app from consuming all your CPU. It makes this slightly less accurate, but is worth it.
 				//You can remove this line and it will still work (better), your CPU just climbs on certain OSes.
 				try{
-					Thread.sleep(4);
+					Thread.sleep(0,5);
 				}catch(Exception e){
 				}
 				//
@@ -156,12 +163,18 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		m2r2=new JMenuItem("800*600");
 		m2s1=new JMenuItem("%100");
 		m2s2=new JMenuItem("%50");
+		m2f1=new JMenuItem("120");
+		m2f2=new JMenuItem("60");
+		m2f3=new JMenuItem("30");
 		m21.addActionListener(this);
 		m11.addActionListener(this);
 		m2r1.addActionListener(this);
 		m2r2.addActionListener(this);
 		m2s1.addActionListener(this);
 		m2s2.addActionListener(this);
+		m2f1.addActionListener(this);
+		m2f2.addActionListener(this);
+		m2f3.addActionListener(this);
 		menu1.add(m11);
 		menu2.add(m21);
 		menu2.addSeparator();
@@ -172,6 +185,10 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		menu2.add("Game speed:");
 		menu2.add(m2s1);
 		menu2.add(m2s2);
+		menu2.add("FPS:");
+		menu2.add(m2f1);
+		menu2.add(m2f2);
+		menu2.add(m2f3);
 		menuBar.add(menu1);
 		menuBar.add(menu2);
 		return menuBar;
@@ -179,7 +196,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		if(showStats){
-			g.drawString("FPS: "+fps+"\n",5,10);
+			g.drawString("FPS: "+fps+"    UPS:"+ups,5,10);
 		}
 	}
 	public void keyTyped(KeyEvent e){}
@@ -220,10 +237,21 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			frame.setSize(width+5,height+50);
 		}else if(e.getSource()==m2s1){
 			GAME_HERTZ=125;
+			TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
 			System.out.println(GAME_HERTZ);
 		}else if(e.getSource()==m2s2){
 			GAME_HERTZ=60;
+			TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
 			System.out.println(GAME_HERTZ);
+		}else if(e.getSource()==m2f1){
+			target_fps=120;
+			TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+		}else if(e.getSource()==m2f2){
+			target_fps=60;
+			TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+		}else if(e.getSource()==m2f3){
+			target_fps=30;
+			TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 		}
 	}
 	public void itemStateChanged(ItemEvent e){
