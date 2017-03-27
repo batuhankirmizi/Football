@@ -1,7 +1,10 @@
 package futbol;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Main extends Engine{
 	public static Player[] players;
@@ -22,6 +25,10 @@ public class Main extends Engine{
 	private static byte t2Score = 0;
 	static String name1="Batu";
 	static String name2="Aytac";
+	JMenuItem m12;
+	JMenuItem m13;
+	JMenuItem m14;
+	JMenuItem m15;
 
 	public static void main(String[] args){
 		System.out.println("Main main() started");
@@ -30,10 +37,9 @@ public class Main extends Engine{
 	}
 	Main(){
 		super();
+		variables.addAll(new ArrayList<String>(Arrays.asList("name1","name2")));
 		System.out.println("sub created");
-	}
 
-	public  void initialize(){
 		// Initialize players
 		players=new Player[PLAYER_COUNT];
 		players[0]=new Player(name1, width/3, height/2);
@@ -71,6 +77,10 @@ public class Main extends Engine{
 
 		System.out.println("objects initialized");
 	}
+
+	public  void initialize(){
+
+	}
 	public  void gameCodes(){
 		for(Direk d : Direk.direkler){
 			if(distance(d,ball)<=(d.SIZE/2+ball.SIZE)){
@@ -80,7 +90,7 @@ public class Main extends Engine{
 			}
 		}
 		//Horizontal bounds
-        if(ball.yPos + (ball.SIZE / 2) + ball.ySpeed >= 760 && ball.ySpeed > 0) {
+        if(ball.yPos + (ball.SIZE / 2) + ball.ySpeed >= 770 && ball.ySpeed > 0) {
             ball.ySpeed = -ball.ySpeed;
         } else if(ball.yPos - (ball.SIZE / 2) + ball.ySpeed <= 25 && ball.ySpeed < 0) {
             ball.ySpeed = -ball.ySpeed;
@@ -163,6 +173,86 @@ public class Main extends Engine{
 				else if(ball.ySpeed<=-ball.slowY) ball.ySpeed+=ball.slowY;
 				else ball.ySpeed=0;
 	}
+	public void menuBar(){
+		m12=new JMenuItem("Player 1 name");
+		m12.addActionListener(this);
+		menu1.add(m12);
+		m13=new JMenuItem("Player 2 name");
+		m13.addActionListener(this);
+		menu1.add(m13);
+		m14=new JMenuItem("Player 1 color");
+		m14.addActionListener(this);
+		menu1.add(m14);
+		m15=new JMenuItem("Player 2 color");
+		m15.addActionListener(this);
+		menu1.add(m15);
+	}
+	protected void actions(ActionEvent e){
+		if((e.getSource())==m12){
+			String s = (String)JOptionPane.showInputDialog(
+					frame,
+					"Enter name",
+					"Player 1",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					null,
+					name1);
+			if(s.length()>0&&s.length()<8){
+				name1=s;
+				players[0].name=s;
+			}
+		}else if((e.getSource())==m13){
+			String s = (String)JOptionPane.showInputDialog(
+					frame,
+					"Enter name",
+					"Player 2",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					null,
+					name2);
+			if(s.length()>0&&s.length()<8){
+				name2=s;
+				players[1].name=s;
+			}
+		}else if((e.getSource())==m14){
+			String s = (String)JOptionPane.showInputDialog(
+					frame,
+					"Select color",
+					"Player 1",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					new String[]{"red","blue"},
+					name1);
+			if(s.equals("red")){
+				players[0].color=Color.red;
+				blDirek.teamColor=Color.red;
+				tlDirek.teamColor=Color.red;
+			}else if(s.equals("blue")){
+				players[0].color=Color.blue;
+				blDirek.teamColor=Color.blue;
+				tlDirek.teamColor=Color.blue;
+			}
+		}else if((e.getSource())==m15){
+			String s = (String)JOptionPane.showInputDialog(
+					frame,
+					"Select color",
+					"Player 2",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					new String[]{"purple","green"},
+					name1);
+			if(s.equals("purple")){
+				players[1].color=Color.magenta;
+				brDirek.teamColor=Color.magenta;
+				trDirek.teamColor=Color.magenta;
+			}else if(s.equals("green")){
+				players[1].color=Color.green;
+				brDirek.teamColor=Color.green;
+				trDirek.teamColor=Color.green;
+			}
+		}
+	}
+
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		if(showStats){
@@ -193,7 +283,9 @@ public class Main extends Engine{
         int i=1;
         for(Player p : players){
             p.xSpeed=0;
+            p.i=0;
             p.ySpeed=0;
+            p.j=0;
             p.xPos=i*400;
             p.yPos=400;
             i++;

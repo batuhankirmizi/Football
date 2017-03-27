@@ -5,10 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Formatter;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public abstract class Engine extends JPanel implements KeyListener, ActionListener, ItemListener{
 	public static Engine engine;
@@ -21,11 +18,14 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	short GAME_HERTZ=120;
 	static short width=1200;
 	static short height=800;
-	File sett=new File("settings.txt");
+	static ArrayList<String> variables=new ArrayList<>();
+	File sett;
 	Scanner settings;
 	Formatter f;
 	public JMenuBar menuBar;
 	private byte target_fps=60;
+	JMenu menu1;
+	JMenu menu2;
 	public JMenuItem m11;
 	public JMenuItem m21;
 	public JMenuItem m2r1;
@@ -40,19 +40,30 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 
 	Engine(){
-		System.out.println("sup created");
+		for(String s: new String[]{"fps","ups"})variables.add(s);
+
 		frame=new JFrame("Football");
 		frame.setSize(width+5, height+30);
 		frame.setLocation(200, 20);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				if (JOptionPane.showConfirmDialog(frame,
+						"Are you sure to close this window?", "Really? Closing?",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+					saveConf();
+					System.exit(0);
+				}
+			}
+		});
 		frame.setResizable(false);
 		JPanel contPane=new JPanel(new BorderLayout());
 
 		frame.setJMenuBar(menuBarimiz());
 		frame.setContentPane(contPane);
 		menuBar.setVisible(false);
-
-		initialize();
 
 		setLayout(null);
 		setSize(width, height);
@@ -62,42 +73,14 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		setFocusable(true);
 		requestFocusInWindow();
 
-		frame.add(this);
-		frame.setVisible(true);
-
-		try{
-			settings=new Scanner(sett);
-		}catch(FileNotFoundException e){
-			try{
-				f=new Formatter("settings.txt");
-				settings=new Scanner(sett);
-			}catch(FileNotFoundException f){
-			}
-		}
-		while(settings.hasNext()){
-			Scanner srr=new Scanner(settings.nextLine()).useDelimiter("=");
-			String sasa=srr.next();
-			String sasa2=srr.next();
-			System.out.println(sasa+" to "+sasa2);
-			try{
-				this.getClass().getDeclaredField(sasa).set(this,sasa2);
-			}catch(Throwable e){
-				System.out.println("haha");
-			}
-		}
-
-		setLayout(null);
-		setSize(width,height);
-		setLocation(0,0);
-		addKeyListener(this);
-		setBackground(Color.BLACK);
-		setFocusable(true);
-		requestFocusInWindow();
-
-		frame.add(this);
-		frame.setVisible(true);
+		System.out.println("sup created");
 	}
 	public void run(){
+		initialize();
+
+		frame.add(this);
+		frame.setVisible(true);
+
 		double lastUpdateTime=System.nanoTime();
 		double lastRenderTime=System.nanoTime();
 		new Timer(1000){
@@ -134,15 +117,49 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			}
 		}
 	}
+	public void readSett(){
+		try{
+			sett=new File("settings.txt");
+			settings=new Scanner(sett);
+		}catch(FileNotFoundException e){
+			try{
+				f=new Formatter("settings.txt");
+				settings=new Scanner(sett);
+				System.out.println("settings.txt created");
+			}catch(FileNotFoundException f){
+			}
+		}
+		while(settings.hasNext()){
+			Scanner srr=new Scanner(settings.nextLine()).useDelimiter("=");
+			String sasa=srr.next();
+			String sasa2=srr.next();
+			if(variables.contains(sasa)){
+				System.out.println(sasa+" to "+sasa2);
+				try{
+					this.getClass().getDeclaredField(sasa).set(this,sasa2);
+				}catch(Throwable e){
+					System.out.println("haha");
+				}
+			}
+		}
+	}
+	public void initialize(){
+		readSett();
+	}
+	public void saveConf(){
+		String s="";
+		System.out.println("saved configs");
+	}
 
-	public abstract void initialize();
 	public abstract void gameCodes();
 	public abstract void reset();
+	public abstract void menuBar();
+	protected abstract void actions(ActionEvent e);
 
 	public JMenuBar menuBarimiz(){
 		menuBar=new JMenuBar();
-		JMenu menu1=new JMenu("Game");
-		JMenu menu2=new JMenu("Engine");
+		menu1=new JMenu("Game");
+		menu2=new JMenu("Engine");
 		m11=new JMenuItem("Reset");
 		m21=new JMenuItem("Show Stats");
 		m2r1=new JMenuItem("1200*800");
@@ -177,6 +194,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		menu2.add(m2f3);
 		menuBar.add(menu1);
 		menuBar.add(menu2);
+		menuBar();
 		return menuBar;
 	}
 	public void paintComponent(Graphics g){
@@ -239,8 +257,10 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		}else if(e.getSource()==m2f3){
 			target_fps=30;
 			TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
-		}
+		}else
+		actions(e);
 	}
+
 	public void itemStateChanged(ItemEvent e){
 		JMenuItem source=(JMenuItem)(e.getSource());
 	}
