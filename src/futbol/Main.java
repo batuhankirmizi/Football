@@ -79,7 +79,7 @@ public class Main extends Engine{
 	}
 
 	public  void initialize(){
-
+		super.initialize();
 	}
 	public  void gameCodes(){
 		for(Direk d : Direk.direkler){

@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public abstract class Engine extends JPanel implements KeyListener, ActionListener, ItemListener{
+	boolean run=true;
 	public static Engine engine;
 	public short fps=60;
 	public short frameCount=60;
@@ -15,7 +16,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public short updateCount=120;
 	public final Set<Short> pressed=new TreeSet<>();
 	public final JFrame frame;
-	short GAME_HERTZ=120;
+	static short GAME_HERTZ=120;
 	static short width=1200;
 	static short height=800;
 	static ArrayList<String> variables=new ArrayList<>();
@@ -23,7 +24,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	Scanner settings;
 	Formatter f;
 	public JMenuBar menuBar;
-	private byte target_fps=60;
+	static private byte target_fps=60;
 	JMenu menu1;
 	JMenu menu2;
 	public JMenuItem m11;
@@ -36,8 +37,10 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public JMenuItem m2f2;
 	public JMenuItem m2f3;
 	public boolean showStats=false;
-	double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
-	double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+	static double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
+	static double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+	static double lastUpdateTime=System.nanoTime();
+	static double lastRenderTime=System.nanoTime();
 
 	Engine(){
 		for(String s: new String[]{"fps","ups"})variables.add(s);
@@ -49,13 +52,8 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				if (JOptionPane.showConfirmDialog(frame,
-						"Are you sure to close this window?", "Really? Closing?",
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-					saveConf();
-					System.exit(0);
-				}
+				run=false;
+				System.exit(0);
 			}
 		});
 		frame.setResizable(false);
@@ -81,8 +79,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		frame.add(this);
 		frame.setVisible(true);
 
-		double lastUpdateTime=System.nanoTime();
-		double lastRenderTime=System.nanoTime();
 		new Timer(1000){
 			@Override
 			public void run(){
@@ -99,16 +95,19 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			}
 		}.start(); //fps and ups updater
 		// Game loop
-		while(true){
+		TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
+		TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+		while(run){
 			double now=System.nanoTime();
-			if(now-lastUpdateTime>TIME_BETWEEN_UPDATES){
+			if(System.nanoTime()-lastUpdateTime>TIME_BETWEEN_UPDATES){
 				gameCodes();
 				lastUpdateTime+=TIME_BETWEEN_UPDATES;
 				updateCount++;
+
 			}
-			if(now-lastRenderTime>TARGET_TIME_BETWEEN_RENDERS){
+			if(System.nanoTime()-lastRenderTime>TARGET_TIME_BETWEEN_RENDERS){
 				frame.repaint();
-				lastRenderTime=now;
+				lastRenderTime=System.nanoTime();
 			}
 			Thread.yield();
 			try{
@@ -116,8 +115,10 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			}catch(Exception e){
 			}
 		}
+		saveConf();
 	}
 	public void readSett(){
+		System.out.println("reading settings");
 		try{
 			sett=new File("settings.txt");
 			settings=new Scanner(sett);
@@ -133,7 +134,8 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			Scanner srr=new Scanner(settings.nextLine()).useDelimiter("=");
 			String sasa=srr.next();
 			String sasa2=srr.next();
-			if(variables.contains(sasa)){
+			//if(variables.contains(sasa)){
+			if(true){
 				System.out.println(sasa+" to "+sasa2);
 				try{
 					this.getClass().getDeclaredField(sasa).set(this,sasa2);
@@ -200,6 +202,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		frameCount++;
+		lastRenderTime=System.nanoTime();
 		if(showStats){
 			g.drawString("FPS: "+fps+"    UPS:"+ups,5,10);
 		}
