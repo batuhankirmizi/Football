@@ -25,6 +25,8 @@ public class Main extends Engine{
 	private static byte t2Score = 0;
 	static String name1="Batu";
 	static String name2="Aytac";
+	//static Color c1="Batu";
+	//static Color c2="Aytac";
 	JMenuItem m12;
 	JMenuItem m13;
 	JMenuItem m14;
@@ -199,7 +201,6 @@ public class Main extends Engine{
 					name1);
 			if(s.length()>0&&s.length()<8){
 				name1=s;
-				players[0].name=s;
 			}
 		}else if((e.getSource())==m13){
 			String s = (String)JOptionPane.showInputDialog(
@@ -212,7 +213,6 @@ public class Main extends Engine{
 					name2);
 			if(s.length()>0&&s.length()<8){
 				name2=s;
-				players[1].name=s;
 			}
 		}else if((e.getSource())==m14){
 			String s = (String)JOptionPane.showInputDialog(
@@ -276,8 +276,8 @@ public class Main extends Engine{
 		ball.draw(g);
 
 		// Draw scores
-        g.drawString(players[0].name+" "+String.valueOf(t1Score), getWidth() / 3, 12);
-        g.drawString(players[1].name+" "+String.valueOf(t2Score), getWidth() * 2 / 3, 12);
+        g.drawString(name1+" "+String.valueOf(t1Score), getWidth() / 3, 12);
+        g.drawString(name2+" "+String.valueOf(t2Score), getWidth() * 2 / 3, 12);
 	}
 	public  void reset() {
         int i=1;

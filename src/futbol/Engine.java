@@ -115,7 +115,11 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			}catch(Exception e){
 			}
 		}
-		saveConf();
+		try{
+			saveConf();
+		}catch(IllegalAccessException e){
+			e.printStackTrace();
+		}
 	}
 	public void readSett(){
 		System.out.println("reading settings");
@@ -134,22 +138,36 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			Scanner srr=new Scanner(settings.nextLine()).useDelimiter("=");
 			String sasa=srr.next();
 			String sasa2=srr.next();
-			//if(variables.contains(sasa)){
-			if(true){
-				System.out.println(sasa+" to "+sasa2);
-				try{
-					this.getClass().getDeclaredField(sasa).set(this,sasa2);
-				}catch(Throwable e){
-					System.out.println("haha");
-				}
+			System.out.println(sasa+" to "+sasa2);
+			try{
+				this.getClass().getDeclaredField(sasa).set(this,sasa2);
+			}catch(Throwable e){
+				System.out.println("haha");
 			}
 		}
 	}
 	public void initialize(){
 		readSett();
 	}
-	public void saveConf(){
+	public void saveConf() throws IllegalAccessException{
 		String s="";
+		for(String a:variables)
+			try{
+				s+=a+"="+this.getClass().getDeclaredField(a).get(this)+"\n";
+			}catch(NoSuchFieldException e){
+				try{
+					s+=a+"="+this.getClass().getField(a).get(this)+"\n";
+				}catch(NoSuchFieldException e1){
+				}
+			}
+		Formatter f=null;
+		try{
+			f=new Formatter(sett);
+		}catch(FileNotFoundException e){
+			e.printStackTrace();
+		}
+		f.format(s);
+		f.close();
 		System.out.println("saved configs");
 	}
 
