@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main extends Engine{
-	public static Player[] players;
+	private static final byte PLAYER_COUNT=2;
+	static Player[] players;
+	static String name2="Aytac";
 	private static Ball ball;
 	private static Shapes topBound;
 	private static Shapes botBound;
@@ -19,25 +21,21 @@ public class Main extends Engine{
 	private static Direk trDirek;
 	private static Direk brDirek;
 	private static Shapes rightBound2;
-	private static final byte PLAYER_COUNT=2;
-    static boolean goal = true;
+    private static boolean goal = true;
 	private static byte t1Score = 0;
 	private static byte t2Score = 0;
 	static String name1="Batu";
-	static String name2="Aytac";
 	//static Color c1="Batu";
 	//static Color c2="Aytac";
-	JMenuItem m12;
-	JMenuItem m13;
-	JMenuItem m14;
-	JMenuItem m15;
+	private JMenuItem m12;
+	private JMenuItem m13;
+	private JMenuItem m14;
+	private JMenuItem m15;
+	private JMenuItem m16;
+	static byte bot=2;
+	Ai arti;
 
-	public static void main(String[] args){
-		System.out.println("Main main() started");
-		engine=new Main();
-		engine.run();
-	}
-	Main(){
+	private Main(){
 		super();
 		variables.addAll(new ArrayList<String>(Arrays.asList("name1","name2")));
 		System.out.println("sub created");
@@ -63,6 +61,10 @@ public class Main extends Engine{
 
 		for(Player p:players) p.enem=p.enemy();
 
+		if(bot>0){
+			arti=new Ai();
+			arti.start();
+		}
 		// Set control keys
 		players[0].left='A';
 		players[0].right='D';
@@ -80,9 +82,28 @@ public class Main extends Engine{
 		System.out.println("objects initialized");
 	}
 
+	public static void main(String[] args){
+		System.out.println("Main main() started");
+		engine=new Main();
+		engine.run();
+	}
+
+	public static double distance(double x1, double y1, double x2, double y2){
+		return Math.sqrt(Math.abs((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)));
+	}
+
+	private static double distance(Circly p1,Circly p2){
+		return Math.sqrt(Math.abs((p1.xPos-p2.xPos)*(p1.xPos-p2.xPos)+(p1.yPos-p2.yPos)*(p1.yPos-p2.yPos)));
+	}
+
 	public  void initialize(){
 		super.initialize();
+		players[0].xPos=0;
+		players[0].i=125;
+		players[1].xPos=0;
+		players[1].yPos=0;
 	}
+
 	public  void gameCodes(){
 		for(Direk d : Direk.direkler){
 			if(distance(d,ball)<=(d.SIZE/2+ball.SIZE)){
@@ -134,7 +155,7 @@ public class Main extends Engine{
 			else if(!pressed.contains(p.left)&&pressed.contains(p.right))
 				if(p.i<122) p.i+=3;
 				else p.i=125;
-				
+
 			//move player
 			if(p.ySpeed<0&&p.yPos+p.ySpeed<p.SIZE/2) p.yPos=p.SIZE/2;
 			else if(p.ySpeed>0&&p.yPos+p.ySpeed>800-p.SIZE/2) p.yPos=800-p.SIZE/2;
@@ -175,6 +196,7 @@ public class Main extends Engine{
 				else if(ball.ySpeed<=-ball.slowY) ball.ySpeed+=ball.slowY;
 				else ball.ySpeed=0;
 	}
+
 	public void menuBar(){
 		m12=new JMenuItem("Player 1 name");
 		m12.addActionListener(this);
@@ -188,7 +210,11 @@ public class Main extends Engine{
 		m15=new JMenuItem("Player 2 color");
 		m15.addActionListener(this);
 		menu1.add(m15);
+		m16=new JMenuItem("Send bot to:");
+		m16.addActionListener(this);
+		menu1.add(m16);
 	}
+
 	protected void actions(ActionEvent e){
 		if((e.getSource())==m12){
 			String s = (String)JOptionPane.showInputDialog(
@@ -250,6 +276,24 @@ public class Main extends Engine{
 				brDirek.teamColor=Color.green;
 				trDirek.teamColor=Color.green;
 			}
+		}else if(e.getSource()==m16){
+			JTextField xField = new JTextField(String.valueOf((int)arti.player.xPos),5);
+			JTextField yField = new JTextField(String.valueOf((int)arti.player.yPos),5);
+
+			JPanel myPanel = new JPanel();
+			myPanel.add(new JLabel("x:"));
+			myPanel.add(xField);
+			myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+			myPanel.add(new JLabel("y:"));
+			myPanel.add(yField,arti.player.yPos);
+
+			int result = JOptionPane.showConfirmDialog(null, myPanel,
+					"Please Enter X and Y Values", JOptionPane.OK_CANCEL_OPTION);
+			if (result == JOptionPane.OK_OPTION) {
+				System.out.println("x value: " + xField.getText());
+				System.out.println("y value: " + yField.getText());
+				arti.goTo(Integer.valueOf(xField.getText()),Integer.valueOf(yField.getText()));
+			}
 		}
 	}
 
@@ -260,6 +304,8 @@ public class Main extends Engine{
 			g.drawString("p1 x: "+players[0].xSpeed+" y: "+players[0].ySpeed, 5, 30);
 			g.drawString("p2 speed: "+Math.sqrt(players[1].xSpeed*players[1].xSpeed+players[1].ySpeed*players[1].ySpeed), 5, 40);
 			g.drawString("ball speed: "+Math.sqrt(ball.xSpeed*ball.xSpeed+ball.ySpeed*ball.ySpeed), 5, 50);
+			g.drawString("x: "+(int)players[0].xPos+" y: "+(int)players[0].yPos+(bot==1?arti.moving?"moving":"stationary":""),(int)players[0].xPos-players[0].SIZE/2,(int)players[0].yPos+players[0].SIZE);
+			g.drawString("x: "+(int)players[1].xPos+" y: "+(int)players[1].yPos+(bot==2?arti.moving?"moving":"stationary":""),(int)players[1].xPos-players[1].SIZE/2,(int)players[1].yPos+players[1].SIZE);
 		}
 		topBound.draw(g);
 		botBound.draw(g);
@@ -279,6 +325,7 @@ public class Main extends Engine{
         g.drawString(name1+" "+String.valueOf(t1Score), getWidth() / 3, 12);
         g.drawString(name2+" "+String.valueOf(t2Score), getWidth() * 2 / 3, 12);
 	}
+
 	public  void reset() {
         int i=1;
         for(Player p : players){
@@ -300,7 +347,8 @@ public class Main extends Engine{
 		brDirek.color=Color.white;
         goal=true;
     }
-	public  void score(boolean team1){
+
+	private void score(boolean team1){
 		goal = false;
 		if(team1){
 			trDirek.color=players[1].color;
@@ -312,11 +360,5 @@ public class Main extends Engine{
 			t2Score++;
 		}
 		new Timer(1500){public void run(){super.run();reset();}}.start();
-	}
-	public static double distance(double x1, double y1, double x2, double y2){
-		return Math.sqrt(Math.abs((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)));
-	}
-	public static double distance(Circly p1, Circly p2){
-		return Math.sqrt(Math.abs((p1.xPos-p2.xPos)*(p1.xPos-p2.xPos)+(p1.yPos-p2.yPos)*(p1.yPos-p2.yPos)));
 	}
 }

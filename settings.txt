@@ -1,4 +1,2 @@
-fps=96
-ups=120
 name1=Aytaç
 name2=Batu

@@ -2,7 +2,7 @@ package futbol;
 
 class Player extends Circly{
 	final byte SPEED=5;
-	String name;
+	private String name;
 	byte i=0;
 	byte j=0;
 	short up;
@@ -10,6 +10,7 @@ class Player extends Circly{
 	short left;
 	short right;
 	Player enem;
+	double angel;
 
 	Player(String name,int xPos,int yPos){
 		super();
@@ -21,7 +22,7 @@ class Player extends Circly{
 
 	void move(){
 		if(Main.distance(xPos+xSpeed,yPos+ySpeed,enem.xPos,enem.yPos)<=SIZE/2+enem.SIZE/2){
-			double angel=Math.atan2(yPos-enem.yPos,xPos-enem.xPos);
+			angel=Math.atan2(yPos-enem.yPos,xPos-enem.xPos);
 			yPos=yPos+ySpeed*Math.abs(Math.cos(angel));
 			xPos=xPos+xSpeed*Math.abs(Math.sin(angel));
 			if((yPos-enem.yPos)/(xPos-enem.xPos)<0){

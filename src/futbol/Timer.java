@@ -1,6 +1,6 @@
 package futbol;
 
-public class Timer extends Thread{
+class Timer extends Thread{
 	int time;
 	Timer(int miliseconds){
 		super();

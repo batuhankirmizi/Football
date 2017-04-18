@@ -8,39 +8,39 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public abstract class Engine extends JPanel implements KeyListener, ActionListener, ItemListener{
-	boolean run=true;
-	public static Engine engine;
-	public short fps=60;
-	public short frameCount=60;
-	public short ups=120;
-	public short updateCount=120;
-	public final Set<Short> pressed=new TreeSet<>();
-	public final JFrame frame;
-	static short GAME_HERTZ=120;
+	static boolean run=true;
+	static Engine engine;
+	short fps=60;
+	short frameCount=60;
+	short ups=120;
+	private short updateCount=120;
+	final static Set<Short> pressed=new TreeSet<>();
+	final JFrame frame;
+	private static short GAME_HERTZ=120;
 	static short width=1200;
 	static short height=800;
 	static ArrayList<String> variables=new ArrayList<>();
-	File sett;
-	Scanner settings;
-	Formatter f;
-	public JMenuBar menuBar;
+	private File sett;
+	private Scanner settings;
+	private Formatter f;
+	private JMenuBar menuBar;
 	static private byte target_fps=60;
 	JMenu menu1;
-	JMenu menu2;
-	public JMenuItem m11;
-	public JMenuItem m21;
-	public JMenuItem m2r1;
-	public JMenuItem m2r2;
-	public JMenuItem m2s1;
-	public JMenuItem m2s2;
-	public JMenuItem m2f1;
-	public JMenuItem m2f2;
-	public JMenuItem m2f3;
-	public boolean showStats=false;
-	static double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
-	static double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
-	static double lastUpdateTime=System.nanoTime();
-	static double lastRenderTime=System.nanoTime();
+	private JMenu menu2;
+	private JMenuItem m11;
+	private JMenuItem m21;
+	private JMenuItem m2r1;
+	private JMenuItem m2r2;
+	private JMenuItem m2s1;
+	private JMenuItem m2s2;
+	private JMenuItem m2f1;
+	private JMenuItem m2f2;
+	private JMenuItem m2f3;
+	boolean showStats=true;
+	private static double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
+	private static double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+	private static double lastUpdateTime=System.nanoTime();
+	private static double lastRenderTime=System.nanoTime();
 
 	Engine(){
 		for(String s: new String[]{"fps","ups"})variables.add(s);
@@ -73,7 +73,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 
 		System.out.println("sup created");
 	}
-	public void run(){
+	void run(){
 		initialize();
 
 		frame.add(this);
@@ -82,10 +82,10 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		new Timer(1000){
 			@Override
 			public void run(){
-				while(true){
+				while(run){
 					try{
 						Thread.sleep(time);
-					}catch(Exception e){
+					}catch(Exception ignored){
 					}
 					ups=updateCount;
 					updateCount=0;
@@ -112,7 +112,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			Thread.yield();
 			try{
 				Thread.sleep(3);
-			}catch(Exception e){
+			}catch(Exception ignored){
 			}
 		}
 		try{
@@ -121,7 +121,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			e.printStackTrace();
 		}
 	}
-	public void readSett(){
+	private void readSett(){
 		System.out.println("reading settings");
 		try{
 			sett=new File("settings.txt");
@@ -131,7 +131,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 				f=new Formatter("settings.txt");
 				settings=new Scanner(sett);
 				System.out.println("settings.txt created");
-			}catch(FileNotFoundException f){
+			}catch(FileNotFoundException ignored){
 			}
 		}
 		while(settings.hasNext()){
@@ -146,7 +146,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			}
 		}
 	}
-	public void initialize(){
+	void initialize(){
 		readSett();
 	}
 	public void saveConf() throws IllegalAccessException{
@@ -171,12 +171,12 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		System.out.println("saved configs");
 	}
 
-	public abstract void gameCodes();
-	public abstract void reset();
-	public abstract void menuBar();
+	protected abstract void gameCodes();
+	protected abstract void reset();
+	protected abstract void menuBar();
 	protected abstract void actions(ActionEvent e);
 
-	public JMenuBar menuBarimiz(){
+	private JMenuBar menuBarimiz(){
 		menuBar=new JMenuBar();
 		menu1=new JMenu("Game");
 		menu2=new JMenu("Engine");
@@ -249,8 +249,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		System.out.println("pressed something");
 		if((e.getSource())==m21){
 			System.out.println("show stats");
-			if(showStats) showStats=false;
-			else showStats=true;
+			showStats=!showStats;
 		}else if((e.getSource())==m11){
 			reset();
 		}else if((e.getSource())==m2r1){

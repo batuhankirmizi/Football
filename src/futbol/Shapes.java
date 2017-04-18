@@ -2,7 +2,7 @@ package futbol;
 
 import java.awt.*;
 
-public class Shapes extends Rectangle{
+class Shapes extends Rectangle{
 	Shapes(int x,int y,int width,int height){
 		this.x=x;
 		this.y=y;
