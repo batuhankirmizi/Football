@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Main extends Engine{
 	private static final byte PLAYER_COUNT=2;
@@ -27,13 +28,17 @@ public class Main extends Engine{
 	static String name1="Batu";
 	//static Color c1="Batu";
 	//static Color c2="Aytac";
-	private JMenuItem m12;
+	private JMenuItem m12;//reset
 	private JMenuItem m13;
 	private JMenuItem m14;
 	private JMenuItem m15;
-	private JMenuItem m16;
-	static byte bot=2;
-	Ai arti;
+	private JMenuItem m16;//send bot to:
+	private JMenuItem m17;//send bot to random
+	private JMenuItem m18;//bot hit the ball
+	static byte arti1t=1;
+	static byte arti2t=0;
+	Ai arti1;
+	Ai arti2;
 
 	private Main(){
 		super();
@@ -61,10 +66,10 @@ public class Main extends Engine{
 
 		for(Player p:players) p.enem=p.enemy();
 
-		if(bot>0){
+		/*if(bot>0){
 			arti=new Ai();
-			arti.start();
-		}
+			arti1.start();
+		}*/
 		// Set control keys
 		players[0].left='A';
 		players[0].right='D';
@@ -79,6 +84,13 @@ public class Main extends Engine{
 		ball=new Ball();
 		ball.color=Color.cyan;
 
+		if(arti1t>0){
+			arti1=new Ai(arti1t);
+		}
+		if(arti2t>0){
+			arti2=new Ai(arti2t);
+		}
+		
 		System.out.println("objects initialized");
 	}
 
@@ -98,10 +110,7 @@ public class Main extends Engine{
 
 	public  void initialize(){
 		super.initialize();
-		players[0].xPos=0;
-		players[0].i=125;
-		players[1].xPos=0;
-		players[1].yPos=0;
+		reset();
 	}
 
 	public  void gameCodes(){
@@ -125,76 +134,56 @@ public class Main extends Engine{
 	        ball.xSpeed = -ball.xSpeed;
         }
 
+		if(arti1t>0)arti1.run();
 		for(Player p : players){
 			if(distance(p,ball)<=(p.SIZE/2+ball.SIZE/2)){
 				ball.hit(p);
 			}
-			//set player speed
-			p.xSpeed=p.SPEED*Math.sin(p.i*Math.PI/250)*Math.cos(p.j*Math.PI/500);
-			p.ySpeed=p.SPEED*Math.sin(p.j*Math.PI/250)*Math.cos(p.i*Math.PI/500);
-
-			//slow player
-			if(p.i>2) p.i-=2;
-			else if(p.i<-2) p.i+=2;
-			else p.i=0;
-			if(p.j>2) p.j-=2;
-			else if(p.j<-2) p.j+=2;
-			else p.j=0;
-
 			//keylisten
 			if(pressed.contains(p.up)&&!pressed.contains(p.down))
-				if(p.j>-122) p.j-=3;
+				if(p.j>-(125-Player.increment)) p.j-=Player.increment;
 				else p.j=-125;
 			else if(!pressed.contains(p.up)&&pressed.contains(p.down))
-				if(p.j<122) p.j+=3;
+				if(p.j<(125-Player.increment)) p.j+=Player.increment;
 				else p.j=125;
 
 			if(pressed.contains(p.left)&&!pressed.contains(p.right))
-				if(p.i>-122) p.i-=3;
+				if(p.i>-(125-Player.increment)) p.i-=Player.increment;
 				else p.i=-125;
 			else if(!pressed.contains(p.left)&&pressed.contains(p.right))
-				if(p.i<122) p.i+=3;
+				if(p.i<(125-Player.increment)) p.i+=Player.increment;
 				else p.i=125;
+		
+			p.move();
+		}
 
-			//move player
-			if(p.ySpeed<0&&p.yPos+p.ySpeed<p.SIZE/2) p.yPos=p.SIZE/2;
-			else if(p.ySpeed>0&&p.yPos+p.ySpeed>800-p.SIZE/2) p.yPos=800-p.SIZE/2;
-			else p.move();
-			if(p.xSpeed<0&&p.xPos+p.xSpeed<p.SIZE/2) p.xPos=p.SIZE/2;
-			else if(p.xSpeed>0&&p.xPos+p.xSpeed>1200-p.SIZE/2) p.xPos=1200-p.SIZE/2;
-			else p.move();
-			}
-
-
-			if(goal){
-				// Goal condition
-				if(ball.yPos>=321&&ball.yPos<=478&&goal){
-					if(ball.xPos>=1150&&goal){
-						score(true);
-					}else if(ball.xPos<=50&&goal){
-						score(false);
-					}
+		if(goal){
+			// Goal condition
+			if(ball.yPos>=321&&ball.yPos<=478&&goal){
+				if(ball.xPos>=1150&&goal){
+					score(true);
+				}else if(ball.xPos<=50&&goal){
+					score(false);
 				}
 			}
+		}
+		//Ball move
+		ball.xPos=ball.xPos + (ball.xSpeed > 0 ? Math.min(Ball.limit, ball.xSpeed):Math.max(-Ball.limit, ball.xSpeed));
+		ball.yPos=ball.yPos + (ball.ySpeed > 0 ? Math.min(Ball.limit, ball.ySpeed) :
+        Math.max(-Ball.limit, ball.ySpeed));
 
-				//Ball move
-				ball.xPos=ball.xPos + (ball.xSpeed > 0 ? Math.min(Ball.limit, ball.xSpeed) :
-                                                                      Math.max(-Ball.limit, ball.xSpeed));
-				ball.yPos=ball.yPos + (ball.ySpeed > 0 ? Math.min(Ball.limit, ball.ySpeed) :
-                        Math.max(-Ball.limit, ball.ySpeed));
+		//Ball slows over time
+		double moveAngle;
+		moveAngle=Math.atan2(ball.ySpeed, ball.xSpeed);
+		ball.slowX=ball.slow*Math.abs(Math.cos(moveAngle));
+		ball.slowY=ball.slow*Math.abs(Math.sin(moveAngle));
 
-				//Ball slows over time
-				double moveAngle;
-				moveAngle=Math.atan2(ball.ySpeed, ball.xSpeed);
-				ball.slowX=ball.slow*Math.abs(Math.cos(moveAngle));
-				ball.slowY=ball.slow*Math.abs(Math.sin(moveAngle));
-
-				if(ball.xSpeed>=ball.slowX) ball.xSpeed-=ball.slowX;
-				else if(ball.xSpeed<=-ball.slowX) ball.xSpeed+=ball.slowX;
-				else ball.xSpeed=0;
-				if(ball.ySpeed>=ball.slowY) ball.ySpeed-=ball.slowY;
-				else if(ball.ySpeed<=-ball.slowY) ball.ySpeed+=ball.slowY;
-				else ball.ySpeed=0;
+		if(ball.xSpeed>=ball.slowX) ball.xSpeed-=ball.slowX;
+		else if(ball.xSpeed<=-ball.slowX) ball.xSpeed+=ball.slowX;
+		else ball.xSpeed=0;
+		if(ball.ySpeed>=ball.slowY) ball.ySpeed-=ball.slowY;
+		else if(ball.ySpeed<=-ball.slowY) ball.ySpeed+=ball.slowY;
+		else ball.ySpeed=0;
 	}
 
 	public void menuBar(){
@@ -213,6 +202,12 @@ public class Main extends Engine{
 		m16=new JMenuItem("Send bot to:");
 		m16.addActionListener(this);
 		menu1.add(m16);
+		m17=new JMenuItem("Send bot1 to random location");
+		m17.addActionListener(this);
+		menu1.add(m17);
+		m18=new JMenuItem("Bot1 hit the ball");
+		m18.addActionListener(this);
+		menu1.add(m18);
 	}
 
 	protected void actions(ActionEvent e){
@@ -277,23 +272,46 @@ public class Main extends Engine{
 				trDirek.teamColor=Color.green;
 			}
 		}else if(e.getSource()==m16){
-			JTextField xField = new JTextField(String.valueOf((int)arti.player.xPos),5);
-			JTextField yField = new JTextField(String.valueOf((int)arti.player.yPos),5);
+			JTextField xField = new JTextField(String.valueOf((int)arti1.player.xPos),5);
+			JTextField yField = new JTextField(String.valueOf((int)arti1.player.yPos),5);
 
 			JPanel myPanel = new JPanel();
 			myPanel.add(new JLabel("x:"));
 			myPanel.add(xField);
 			myPanel.add(Box.createHorizontalStrut(15)); // a spacer
 			myPanel.add(new JLabel("y:"));
-			myPanel.add(yField,arti.player.yPos);
+			myPanel.add(yField,arti1.player.yPos);
 
 			int result = JOptionPane.showConfirmDialog(null, myPanel,
 					"Please Enter X and Y Values", JOptionPane.OK_CANCEL_OPTION);
 			if (result == JOptionPane.OK_OPTION) {
 				System.out.println("x value: " + xField.getText());
 				System.out.println("y value: " + yField.getText());
-				arti.goTo(Integer.valueOf(xField.getText()),Integer.valueOf(yField.getText()));
+				arti1.goTo(Integer.valueOf(xField.getText()),Integer.valueOf(yField.getText()));
 			}
+		}else if(e.getSource()==m17){
+			Random rng=new Random();
+			arti1.goTo(rng.nextInt(1200),rng.nextInt(800));
+		}else if(e.getSource()==m18){
+			Random rng=new Random();
+			arti1.goTo((int)ball.xPos,(int)ball.yPos);
+		}
+	}
+	
+	public void keyPressed(KeyEvent e){
+		super.keyPressed(e);
+		if(e.getKeyCode()=='B'){
+			if(arti2.rand)arti2.goTo((int)ball.xPos,(int)ball.yPos);
+		}else if(e.getKeyCode()=='N'){
+			Random rng=new Random();
+			arti2.goTo(rng.nextInt(1200),rng.nextInt(800));
+			new Timer(3000){public void run(){super.run();arti2.rand=true;}}.start();
+		}else if(e.getKeyCode()=='Z'){
+			if(arti1.rand)arti1.goTo((int)ball.xPos,(int)ball.yPos);
+		}else if(e.getKeyCode()=='X'){
+			Random rng=new Random();
+			arti1.goTo(rng.nextInt(1200),rng.nextInt(800));
+			new Timer(3000){public void run(){super.run();arti1.rand=true;}}.start();
 		}
 	}
 
@@ -304,8 +322,8 @@ public class Main extends Engine{
 			g.drawString("p1 x: "+players[0].xSpeed+" y: "+players[0].ySpeed, 5, 30);
 			g.drawString("p2 speed: "+Math.sqrt(players[1].xSpeed*players[1].xSpeed+players[1].ySpeed*players[1].ySpeed), 5, 40);
 			g.drawString("ball speed: "+Math.sqrt(ball.xSpeed*ball.xSpeed+ball.ySpeed*ball.ySpeed), 5, 50);
-			g.drawString("x: "+(int)players[0].xPos+" y: "+(int)players[0].yPos+(bot==1?arti.moving?"moving":"stationary":""),(int)players[0].xPos-players[0].SIZE/2,(int)players[0].yPos+players[0].SIZE);
-			g.drawString("x: "+(int)players[1].xPos+" y: "+(int)players[1].yPos+(bot==2?arti.moving?"moving":"stationary":""),(int)players[1].xPos-players[1].SIZE/2,(int)players[1].yPos+players[1].SIZE);
+			g.drawString("x: "+(int)players[0].xPos+" y: "+(int)players[0].yPos+(players[0].botted?players[0].bot.moving?"moving":"stationary":""),(int)players[0].xPos-players[0].SIZE/2,(int)players[0].yPos+players[0].SIZE);
+			g.drawString("x: "+(int)players[1].xPos+" y: "+(int)players[1].yPos+(players[1].botted?players[1].bot.moving?"moving":"stationary":""),(int)players[1].xPos-players[1].SIZE/2,(int)players[1].yPos+players[1].SIZE);
 		}
 		topBound.draw(g);
 		botBound.draw(g);
@@ -346,6 +364,8 @@ public class Main extends Engine{
 		trDirek.color=Color.white;
 		brDirek.color=Color.white;
         goal=true;
+		if(arti1t>0)arti1.rand=false;
+		if(arti2t>0)arti2.rand=false;
     }
 
 	private void score(boolean team1){

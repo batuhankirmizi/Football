@@ -1,26 +1,31 @@
 package futbol;
 
 public class Ai extends Thread{
-	byte hertz=10;
+	byte hertz=5;
 	Player player;
 	int xDes;
 	int yDes;
 	boolean moving=false;
 	boolean movingY=false;
 	boolean movingX=false;
+	byte team;
+	boolean rand;
 
-	Ai(){
+	Ai(byte team){
+		this.team=team;
 		player=getPlayer();
-		System.out.println("AI created for player"+Main.bot);
+		System.out.println("AI created for player"+team);
+		player.botted=true;
+		player.bot=this;
 	}
 	public void run(){
 		super.run();
-		while(Main.run){
+		//while(Main.run){
 			//donothing();
 			System.out.print("");
 			if(moving){
 				if(movingY){
-					if((int)(player.yPos-surplusY())<yDes) pressDown();
+					if((player.yPos+surplusY())<yDes) pressDown();
 					else if((int)(player.yPos-surplusY())>yDes) pressUp();
 					else{
 						releaseDown();
@@ -28,7 +33,7 @@ public class Ai extends Thread{
 						movingY=false;
 					}
 				}if(movingX){
-					if((int)(player.xPos-surplusX())<xDes) pressRight();
+					if((int)(player.xPos+surplusX())<xDes) pressRight();
 					else if((int)(player.xPos-surplusX())>xDes) pressLeft();
 					else{
 						releaseLeft();
@@ -41,7 +46,7 @@ public class Ai extends Thread{
 				}catch(InterruptedException ignored){
 				}
 			}
-		}
+		//}
 	}
 	void goTo(int x,int y){
 		xDes=x;
@@ -52,7 +57,7 @@ public class Ai extends Thread{
 		System.out.println("Going to "+x+","+y);
 	}
 	Player getPlayer(){
-		return Main.players[Main.bot-1];
+		return Main.players[team-1];
 	}
 	void pressUp(){
 		releaseDown();
@@ -83,14 +88,39 @@ public class Ai extends Thread{
 		Main.pressed.remove(player.right);
 	}
 	double surplusY(){
+		/*
 		double distance=Math.PI*getYSpeed()*getYSpeed()*5/2;
 		if(player.yPos<yDes) return -distance;
 		else return distance;
+		*/
+		double dis=0;
+		if(Math.abs(yDes-player.yPos)>Math.abs(xDes-player.xPos)){
+			int g=Math.abs(player.i);
+			for(int f=Math.abs(player.j);f>0;f-=Player.decrement){
+			if(g>Player.decrement)g-=Player.decrement;
+			else g=0;
+			dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(g*Math.PI/500);
+			}
+		}
+		else for(int f=Math.abs(player.j);f>0;f-=Player.decrement)dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(player.i*Math.PI/500);
+		return dis*2;
 	}
 	double surplusX(){
-		double distance=Math.PI*getXSpeed()*getXSpeed()*5/2;
+		/*double distance=Math.PI*getXSpeed()*getXSpeed()*5/2;
 		if(player.xPos<xDes) return -distance;
 		else return distance;
+		*/
+		double dis=0;
+		if(Math.abs(xDes-player.xPos)>Math.abs(yDes-player.yPos)){
+			int g=Math.abs(player.j);
+			for(int f=Math.abs(player.i);f>0;f-=Player.decrement){
+			if(g>Player.decrement)g-=Player.decrement;
+			else g=0;
+			dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(g*Math.PI/500);
+			}
+		}
+		else for(int f=Math.abs(player.i);f>0;f-=Player.decrement)dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(player.j*Math.PI/500);
+		return dis*2;
 	}
 	double getYSpeed(){
 		return player.ySpeed;
