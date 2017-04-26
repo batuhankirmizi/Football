@@ -15,12 +15,12 @@ public class Main extends Engine{
 	private static Shapes topBound;
 	private static Shapes botBound;
 	private static Shapes leftBound1;
-	private static Direk tlDirek;
-	private static Direk blDirek;
+	static Direk tlDirek;
+	static Direk blDirek;
 	private static Shapes leftBound2;
 	private static Shapes rightBound1;
-	private static Direk trDirek;
-	private static Direk brDirek;
+	static Direk trDirek;
+	static Direk brDirek;
 	private static Shapes rightBound2;
     private static boolean goal = true;
 	private static byte t1Score = 0;
@@ -35,7 +35,7 @@ public class Main extends Engine{
 	private JMenuItem m16;//send bot to:
 	private JMenuItem m17;//send bot to random
 	private JMenuItem m18;//bot hit the ball
-	static byte arti1t=1;
+	static byte arti1t=0;
 	static byte arti2t=0;
 	Ai arti1;
 	Ai arti2;
@@ -47,9 +47,9 @@ public class Main extends Engine{
 
 		// Initialize players
 		players=new Player[PLAYER_COUNT];
-		players[0]=new Player(name1, width/3, height/2);
+		players[0]=new Player(name1, width/3, height/2,true);
 		players[0].color=Color.RED;
-		players[1]=new Player(name2, width*2/3, height/2);
+		players[1]=new Player(name2, width*2/3, height/2,false);
 		players[1].color=Color.MAGENTA;
 
 		// Draw bounds
@@ -135,6 +135,7 @@ public class Main extends Engine{
         }
 
 		if(arti1t>0)arti1.run();
+		if(arti2t>0)arti2.run();
 		for(Player p : players){
 			if(distance(p,ball)<=(p.SIZE/2+ball.SIZE/2)){
 				ball.hit(p);
@@ -220,7 +221,7 @@ public class Main extends Engine{
 					null,
 					null,
 					name1);
-			if(s.length()>0&&s.length()<8){
+			if(s.length()>0&&s.length()<12){
 				name1=s;
 			}
 		}else if((e.getSource())==m13){
@@ -232,7 +233,7 @@ public class Main extends Engine{
 					null,
 					null,
 					name2);
-			if(s.length()>0&&s.length()<8){
+			if(s.length()>0&&s.length()<12){
 				name2=s;
 			}
 		}else if((e.getSource())==m14){
@@ -242,17 +243,15 @@ public class Main extends Engine{
 					"Player 1",
 					JOptionPane.PLAIN_MESSAGE,
 					null,
-					new String[]{"red","blue"},
+					new String[]{"Red","Blue","Orange"},
 					name1);
-			if(s.equals("red")){
-				players[0].color=Color.red;
-				blDirek.teamColor=Color.red;
-				tlDirek.teamColor=Color.red;
-			}else if(s.equals("blue")){
-				players[0].color=Color.blue;
-				blDirek.teamColor=Color.blue;
-				tlDirek.teamColor=Color.blue;
-			}
+			if(s.equals("Red")){
+				players[0].setColor(Color.red);
+            }else if(s.equals("Blue")){
+                players[0].setColor(Color.blue);
+            }else if(s.equals("Orange")){
+            players[0].setColor(Color.orange);
+        }
 		}else if((e.getSource())==m15){
 			String s = (String)JOptionPane.showInputDialog(
 					frame,
@@ -260,17 +259,15 @@ public class Main extends Engine{
 					"Player 2",
 					JOptionPane.PLAIN_MESSAGE,
 					null,
-					new String[]{"purple","green"},
+					new String[]{"Purple","Green","Pink"},
 					name1);
-			if(s.equals("purple")){
-				players[1].color=Color.magenta;
-				brDirek.teamColor=Color.magenta;
-				trDirek.teamColor=Color.magenta;
-			}else if(s.equals("green")){
-				players[1].color=Color.green;
-				brDirek.teamColor=Color.green;
-				trDirek.teamColor=Color.green;
-			}
+			if(s.equals("Purple")){
+				players[1].setColor(Color.magenta);
+			}else if(s.equals("Green")){
+				players[1].setColor(Color.green);
+			}else if(s.equals("Pink")){
+                players[1].setColor(Color.pink);
+            }
 		}else if(e.getSource()==m16){
 			JTextField xField = new JTextField(String.valueOf((int)arti1.player.xPos),5);
 			JTextField yField = new JTextField(String.valueOf((int)arti1.player.yPos),5);
@@ -290,10 +287,8 @@ public class Main extends Engine{
 				arti1.goTo(Integer.valueOf(xField.getText()),Integer.valueOf(yField.getText()));
 			}
 		}else if(e.getSource()==m17){
-			Random rng=new Random();
 			arti1.goTo(rng.nextInt(1200),rng.nextInt(800));
 		}else if(e.getSource()==m18){
-			Random rng=new Random();
 			arti1.goTo((int)ball.xPos,(int)ball.yPos);
 		}
 	}
@@ -303,13 +298,11 @@ public class Main extends Engine{
 		if(e.getKeyCode()=='B'){
 			if(arti2.rand)arti2.goTo((int)ball.xPos,(int)ball.yPos);
 		}else if(e.getKeyCode()=='N'){
-			Random rng=new Random();
 			arti2.goTo(rng.nextInt(1200),rng.nextInt(800));
 			new Timer(3000){public void run(){super.run();arti2.rand=true;}}.start();
 		}else if(e.getKeyCode()=='Z'){
 			if(arti1.rand)arti1.goTo((int)ball.xPos,(int)ball.yPos);
 		}else if(e.getKeyCode()=='X'){
-			Random rng=new Random();
 			arti1.goTo(rng.nextInt(1200),rng.nextInt(800));
 			new Timer(3000){public void run(){super.run();arti1.rand=true;}}.start();
 		}

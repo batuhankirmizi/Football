@@ -1,7 +1,7 @@
 package futbol;
 
 public class Ai extends Thread{
-	byte hertz=5;
+	byte period=5;
 	Player player;
 	int xDes;
 	int yDes;
@@ -20,33 +20,27 @@ public class Ai extends Thread{
 	}
 	public void run(){
 		super.run();
-		//while(Main.run){
-			//donothing();
-			System.out.print("");
-			if(moving){
-				if(movingY){
-					if((player.yPos+surplusY())<yDes) pressDown();
-					else if((int)(player.yPos-surplusY())>yDes) pressUp();
-					else{
-						releaseDown();
-						releaseUp();
-						movingY=false;
-					}
-				}if(movingX){
-					if((int)(player.xPos+surplusX())<xDes) pressRight();
-					else if((int)(player.xPos-surplusX())>xDes) pressLeft();
-					else{
-						releaseLeft();
-						releaseRight();
-						movingX=false;
-					}
-				}if(!movingY&&!movingX) moving=false;
-				try{
-					Thread.sleep(hertz);
-				}catch(InterruptedException ignored){
+		//donothing();
+		//System.out.print("");
+		if(moving){
+			if(movingY){
+				if((player.yPos+surplusY())<yDes) pressDown();
+				else if((int)(player.yPos-surplusY())>yDes) pressUp();
+				else{
+					releaseDown();
+					releaseUp();
+					movingY=false;
 				}
-			}
-		//}
+			}if(movingX){
+				if((int)(player.xPos+surplusX())<xDes) pressRight();
+				else if((int)(player.xPos-surplusX())>xDes) pressLeft();
+				else{
+					releaseLeft();
+					releaseRight();
+					movingX=false;
+				}
+			}if(!movingY&&!movingX) moving=false;
+		}
 	}
 	void goTo(int x,int y){
 		xDes=x;
@@ -89,7 +83,7 @@ public class Ai extends Thread{
 	}
 	double surplusY(){
 		/*
-		double distance=Math.PI*getYSpeed()*getYSpeed()*5/2;
+		double distance=Math.PI*getYSpeed()*getYSpeed()*5/4;
 		if(player.yPos<yDes) return -distance;
 		else return distance;
 		*/
@@ -97,16 +91,16 @@ public class Ai extends Thread{
 		if(Math.abs(yDes-player.yPos)>Math.abs(xDes-player.xPos)){
 			int g=Math.abs(player.i);
 			for(int f=Math.abs(player.j);f>0;f-=Player.decrement){
-			if(g>Player.decrement)g-=Player.decrement;
-			else g=0;
-			dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(g*Math.PI/500);
+			    if(g>Player.decrement)g-=Player.decrement;
+			    else g=0;
+			    dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(g*Math.PI/500);
 			}
 		}
 		else for(int f=Math.abs(player.j);f>0;f-=Player.decrement)dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(player.i*Math.PI/500);
-		return dis*2;
+		return dis;
 	}
 	double surplusX(){
-		/*double distance=Math.PI*getXSpeed()*getXSpeed()*5/2;
+		/*double distance=Math.PI*getXSpeed()*getXSpeed()*5/4;
 		if(player.xPos<xDes) return -distance;
 		else return distance;
 		*/
@@ -120,7 +114,7 @@ public class Ai extends Thread{
 			}
 		}
 		else for(int f=Math.abs(player.i);f>0;f-=Player.decrement)dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(player.j*Math.PI/500);
-		return dis*2;
+		return dis;
 	}
 	double getYSpeed(){
 		return player.ySpeed;

@@ -25,22 +25,23 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private Formatter f;
 	private JMenuBar menuBar;
 	static private byte target_fps=60;
-	JMenu menu1;
-	private JMenu menu2;
-	private JMenuItem m11;
-	private JMenuItem m21;
-	private JMenuItem m2r1;
-	private JMenuItem m2r2;
-	private JMenuItem m2s1;
-	private JMenuItem m2s2;
-	private JMenuItem m2f1;
-	private JMenuItem m2f2;
-	private JMenuItem m2f3;
+	JMenu menu1; //Game
+	private JMenu menu2; //Engine
+	private JMenuItem m11; //reset
+	private JMenuItem m21; //Show stats
+	private JMenuItem m2r1; //1200*800
+	private JMenuItem m2r2; //800*600
+	private JMenuItem m2s1; //%100 speed
+	private JMenuItem m2s2; //%50 speed
+	private JMenuItem m2f1; //120 fps
+	private JMenuItem m2f2; //60 fps
+	private JMenuItem m2f3; //30 fps
 	boolean showStats=true;
 	private static double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
 	private static double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 	private static double lastUpdateTime=System.nanoTime();
 	private static double lastRenderTime=System.nanoTime();
+	Random rng=new Random();
 
 	Engine(){
 		for(String s: new String[]{"fps","ups"})variables.add(s);
@@ -98,17 +99,19 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
 		TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 		while(run){
-			double now=System.nanoTime();
+			//double now=System.nanoTime();
 			if(System.nanoTime()-lastUpdateTime>TIME_BETWEEN_UPDATES){
 				gameCodes();
 				lastUpdateTime+=TIME_BETWEEN_UPDATES;
+                //lastUpdateTime+=System.nanoTime();
 				updateCount++;
+                if(System.nanoTime()-lastRenderTime>TARGET_TIME_BETWEEN_RENDERS){
+                    frame.repaint();
+                    frameCount++;
+                    lastRenderTime+=TARGET_TIME_BETWEEN_RENDERS;
+                }
+			}
 
-			}
-			if(System.nanoTime()-lastRenderTime>TARGET_TIME_BETWEEN_RENDERS){
-				frame.repaint();
-				lastRenderTime=System.nanoTime();
-			}
 			Thread.yield();
 			try{
 				Thread.sleep(3);
@@ -219,8 +222,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	}
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
-		frameCount++;
-		lastRenderTime=System.nanoTime();
 		if(showStats){
 			g.drawString("FPS: "+fps+"    UPS:"+ups,5,10);
 		}
