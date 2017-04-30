@@ -1,1 +1,0 @@
-javac -d bin src\futbol\*.java
