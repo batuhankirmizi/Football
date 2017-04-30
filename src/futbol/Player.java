@@ -1,9 +1,10 @@
 package futbol;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 class Player extends Circly{
-	final byte SPEED=6;
+	byte SPEED=6;
 	private String name;
 	byte i=0;
 	byte j=0;
@@ -17,10 +18,14 @@ class Player extends Circly{
 	boolean botted;
 	Ai bot;
     private final boolean leftT;
+	int goalsize=160;
+	ArrayList<Direk> direkler=new ArrayList<>();
+    double angel;
 
 	Player(String name,int xPos,int yPos, boolean left){
 		super();
-		SIZE=60;
+		radius=30;
+		size=60;
 		this.name=name;
 		this.xPos=xPos;
 		this.yPos=yPos;
@@ -29,14 +34,13 @@ class Player extends Circly{
 
 	void move(){
 		//set player speed
-			xSpeed=SPEED*Math.sin(i*Math.PI/250)*Math.cos(j*Math.PI/500);
-			ySpeed=SPEED*Math.sin(j*Math.PI/250)*Math.cos(i*Math.PI/500);
+		xSpeed=SPEED*Math.sin(i*Math.PI/250)*Math.cos(j*Math.PI/500);
+		ySpeed=SPEED*Math.sin(j*Math.PI/250)*Math.cos(i*Math.PI/500);
 
-        double angel;
-        if(ySpeed<0&&yPos+ySpeed<SIZE/2) yPos=SIZE/2;
-		else if(ySpeed>0&&yPos+ySpeed>800-SIZE/2) yPos=800-SIZE/2;
+        if(ySpeed<0&&yPos+ySpeed<radius) yPos=radius;
+		else if(ySpeed>0&&yPos+ySpeed>800-radius) yPos=800-radius;
 		else {
-			if(Main.distance(xPos+xSpeed,yPos+ySpeed,enem.xPos,enem.yPos)<=SIZE/2+enem.SIZE/2){
+			if(Main.distance(xPos+xSpeed,yPos+ySpeed,enem.xPos,enem.yPos)<=radius+enem.radius){
 				angel =Math.atan2(yPos-enem.yPos,xPos-enem.xPos);
 				yPos+=ySpeed*Math.abs(Math.cos(angel));
 				if((yPos-enem.yPos)/(xPos-enem.xPos)<0){
@@ -49,10 +53,10 @@ class Player extends Circly{
 				yPos+=ySpeed;
 			}
 		}
-		if(xSpeed<0&&xPos+xSpeed<SIZE/2) xPos=SIZE/2;
-		else if(xSpeed>0&&xPos+xSpeed>1200-SIZE/2) xPos=1200-SIZE/2;
+		if(xSpeed<0&&xPos+xSpeed<radius) xPos=radius;
+		else if(xSpeed>0&&xPos+xSpeed>1200-radius) xPos=1200-radius;
 		else {
-			if(Main.distance(xPos+xSpeed,yPos+ySpeed,enem.xPos,enem.yPos)<=SIZE/2+enem.SIZE/2){
+			if(Main.distance(xPos+xSpeed,yPos+ySpeed,enem.xPos,enem.yPos)<=radius+enem.radius){
 				angel =Math.atan2(yPos-enem.yPos,xPos-enem.xPos);
 				xPos+=xSpeed*Math.abs(Math.sin(angel));
 				if((yPos-enem.yPos)/(xPos-enem.xPos)<0){
@@ -87,4 +91,21 @@ class Player extends Circly{
             Main.brDirek.teamColor=c;
             Main.trDirek.teamColor=c;}
     }
+	void setGoalSize(int goalsize){
+		this.goalsize=goalsize;
+		for(Direk d:direkler)d.updateGoalSize();
+		if(this==Main.player1){
+			Main.leftBound1.height=400-goalsize/2-20;
+			Main.leftBound2.height=400-goalsize/2-20;
+			Main.leftBound2.y=400+goalsize/2;
+			Main.ball.ltg=400-goalsize/2;
+			Main.ball.lbg=400+goalsize/2;
+		}else {
+			Main.rightBound1.height=400-Main.player2.goalsize/2-20;
+			Main.rightBound2.height=400-Main.player2.goalsize/2-20;
+			Main.rightBound2.y=400+Main.player2.goalsize/2;
+			Main.ball.rtg=400-goalsize/2;
+			Main.ball.rbg=400+goalsize/2;
+		}
+	}
 }

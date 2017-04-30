@@ -10,9 +10,9 @@ import java.util.*;
 public abstract class Engine extends JPanel implements KeyListener, ActionListener, ItemListener{
 	static boolean run=true;
 	static Engine engine;
-	short fps=60;
+	public short fps=60;
 	short frameCount=60;
-	short ups=120;
+	public short ups=120;
 	private short updateCount=120;
 	final static Set<Short> pressed=new TreeSet<>();
 	final JFrame frame;
@@ -44,7 +44,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	Random rng=new Random();
 
 	Engine(){
-		for(String s: new String[]{"fps","ups"})variables.add(s);
+		variables.addAll(new ArrayList<String>(Arrays.asList("fps","ups")));
 
 		frame=new JFrame("Football");
 		frame.setSize(width+5, height+30);
@@ -114,7 +114,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 
 			Thread.yield();
 			try{
-				Thread.sleep(3);
+				Thread.sleep(4);
 			}catch(Exception ignored){
 			}
 		}
@@ -157,10 +157,12 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		for(String a:variables)
 			try{
 				s+=a+"="+this.getClass().getDeclaredField(a).get(this)+"\n";
-			}catch(NoSuchFieldException e){
+			}catch(Exception e){
 				try{
 					s+=a+"="+this.getClass().getField(a).get(this)+"\n";
-				}catch(NoSuchFieldException e1){
+				}catch(Exception e1){
+					System.out.println("haha"+e1);
+					e1.printStackTrace();
 				}
 			}
 		Formatter f=null;
@@ -254,30 +256,19 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		}else if((e.getSource())==m11){
 			reset();
 		}else if((e.getSource())==m2r1){
-			width=1200;
-			height=800;
-			frame.setSize(width+5,height+50);
+			setFrame(1200,800);
 		}else if((e.getSource())==m2r2){
-			width=800;
-			height=600;
-			frame.setSize(width+5,height+50);
+			setFrame(800,600);
 		}else if(e.getSource()==m2s1){
-			GAME_HERTZ=125;
-			TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
-			System.out.println(GAME_HERTZ);
+			setUps(120);
 		}else if(e.getSource()==m2s2){
-			GAME_HERTZ=60;
-			TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
-			System.out.println(GAME_HERTZ);
+			setUps(60);
 		}else if(e.getSource()==m2f1){
-			target_fps=120;
-			TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+			setFps(120);
 		}else if(e.getSource()==m2f2){
-			target_fps=60;
-			TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+			setFps(60);
 		}else if(e.getSource()==m2f3){
-			target_fps=30;
-			TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+			setFps(30);
 		}else
 		actions(e);
 	}
@@ -287,6 +278,43 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	}
 	public static void main(){
 		System.out.println("engine class ran123");
-		Main.main();
+	}
+	static float scaleX=width/1200;
+	static float scaleY=width/800;
+	public static double scaleX(){
+		return scaleX;
+	}
+	public static double scaleY(){
+		return scaleY;
+	}
+	public static double scaleSize(){
+		return scaleX;
+	}
+	public static int scaleX(double a){
+		return (int)(a*width/1200);
+	}
+	public static int scaleY(double a){
+		return (int)(a*height/800);
+	}
+	public static int scaleSize(double a){
+		//return (int)(a*scaleX);
+		return (int)(a*width/1200);
+	}
+	public void setFps(int fps){
+		target_fps=(byte)fps;
+		TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+		System.out.println(fps+" fps");
+	}
+	public void setUps(int ups){
+		GAME_HERTZ=(byte)ups;
+		TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
+		System.out.println(ups+" ups");
+	}
+	public void setFrame(int x,int y){
+		width=(short)x;
+		height=(short)y;
+		scaleX=width/1200;
+		scaleY=width/800;
+		frame.setSize(width+5,height+50);
 	}
 }
