@@ -41,7 +41,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private static double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 	private static double lastUpdateTime=System.nanoTime();
 	private static double lastRenderTime=System.nanoTime();
-	Random rng=new Random();
+	static Random rng=new Random();
 
 	Engine(){
 		variables.addAll(new ArrayList<String>(Arrays.asList("fps","ups")));
@@ -71,6 +71,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		setBackground(Color.BLACK);
 		setFocusable(true);
 		requestFocusInWindow();
+		
 
 		System.out.println("sup created");
 	}
@@ -84,10 +85,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			@Override
 			public void run(){
 				while(run){
-					try{
-						Thread.sleep(time);
-					}catch(Exception ignored){
-					}
+					super.run();
 					ups=updateCount;
 					updateCount=0;
 					fps=frameCount;

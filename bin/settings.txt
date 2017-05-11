@@ -1,4 +1,4 @@
-fps=60
-ups=120
+fps=61
+ups=121
 name1=kkk
 name2=lll

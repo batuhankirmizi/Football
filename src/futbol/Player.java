@@ -42,13 +42,22 @@ class Player extends Circly{
 		else {
 			if(Main.distance(xPos+xSpeed,yPos+ySpeed,enem.xPos,enem.yPos)<=radius+enem.radius){
 				angel =Math.atan2(yPos-enem.yPos,xPos-enem.xPos);
-				yPos+=ySpeed*Math.abs(Math.cos(angel));
+				if((yPos+ySpeed*Math.abs(Math.cos(angel))<800-radius)&&(yPos+ySpeed*Math.abs(Math.cos(angel))>radius))yPos+=ySpeed*Math.abs(Math.cos(angel));
+				else {
+					i=0;
+					if(xPos>enem.xPos)enem.j-=4;
+					else enem.j+=4;
+					return;
+				}
 				if((yPos-enem.yPos)/(xPos-enem.xPos)<0){
 					yPos+=xSpeed*Math.abs(Math.cos(angel));
+					if(yPos<enem.yPos)enem.i-=2;
+					else enem.i+=2;
 				}else{
 					yPos-=xSpeed*Math.abs(Math.cos(angel));
+					if(yPos<enem.yPos)enem.i+=2;
+					else enem.i-=2;
 				}
-				enem.yPos+=ySpeed/5;
 			}else{
 				yPos+=ySpeed;
 			}
@@ -61,12 +70,15 @@ class Player extends Circly{
 				xPos+=xSpeed*Math.abs(Math.sin(angel));
 				if((yPos-enem.yPos)/(xPos-enem.xPos)<0){
 					xPos+=ySpeed*Math.abs(Math.sin(angel));
+					if(xPos<enem.xPos)enem.j-=2;
+					else enem.j+=2;
 				}else{
 					xPos-=ySpeed*Math.abs(Math.sin(angel));
+					if(xPos<enem.xPos)enem.j+=2;
+					else enem.j-=2;
 				}
-                enem.xPos+=xSpeed/5;
 			}else{
-				xPos+=xSpeed;
+				if(Main.distance(this,Main.ball)>radius+Main.ball.radius)xPos+=xSpeed;
 			}
 		}
 		//slow player

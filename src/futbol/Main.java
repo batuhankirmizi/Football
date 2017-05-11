@@ -40,6 +40,7 @@ public class Main extends Engine{
 	static byte arti2t=0;
 	Ai arti1;
 	Ai arti2;
+	ArrayList<Mutator> mutators=new ArrayList<>();
 
 
 	private Main(){
@@ -119,6 +120,15 @@ public class Main extends Engine{
 		super.initialize();
 		reset();
 		for(String s:variables)System.out.println(s);
+		new Timer(6000){
+			@Override
+			public void run(){
+				while(run){
+					super.run();
+					mutators.add(new Mutator(1));
+				}
+			}
+		}.start(); //mutator
 	}
 
 	public  void gameCodes(){
@@ -139,6 +149,11 @@ public class Main extends Engine{
 			if(distance(p,ball)<=(p.radius+ball.radius)){
 				ball.hit(p);
 			}
+			for(Mutator m:mutators){
+				if(distance(p,m)<=(p.radius+m.radius)){
+					m.hit(p);
+				}
+			}
 			//keylisten
 			if(pressed.contains(p.up)&&!pressed.contains(p.down))
 				if(p.j>-(125-Player.increment)) p.j-=Player.increment;
@@ -157,6 +172,7 @@ public class Main extends Engine{
 			p.move();
 		}
 		ball.move();
+		for(Mutator m:mutators)m.move();
 		if(ball.xPos>=1150&&goal){
 			score(true);
 		}else if(ball.xPos<=50&&goal){
@@ -332,6 +348,7 @@ public class Main extends Engine{
 		player1.draw(g);
 		player2.draw(g);
 		ball.draw(g);
+		for(Mutator m:mutators)m.draw(g);
 
 		// Draw scores
         g.drawString(name1+" "+String.valueOf(t1Score), getWidth() / 3, 12);
@@ -360,6 +377,7 @@ public class Main extends Engine{
         goal=true;
 		if(arti1t>0)arti1.rand=false;
 		if(arti2t>0)arti2.rand=false;
+		mutators.clear();
     }
 
 	private void score(boolean team1){
