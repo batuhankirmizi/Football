@@ -30,7 +30,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private JMenuItem m11; //reset
 	private JMenuItem m21; //Show stats
 	private JMenuItem m2r1; //1200*800
-	private JMenuItem m2r2; //800*600
+	private JMenuItem m2r2; //900*600
 	private JMenuItem m2s1; //%100 speed
 	private JMenuItem m2s2; //%50 speed
 	private JMenuItem m2f1; //120 fps
@@ -186,7 +186,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		m11=new JMenuItem("Reset");
 		m21=new JMenuItem("Show Stats");
 		m2r1=new JMenuItem("1200*800");
-		m2r2=new JMenuItem("800*600");
+		m2r2=new JMenuItem("900*600");
 		m2s1=new JMenuItem("%100");
 		m2s2=new JMenuItem("%50");
 		m2f1=new JMenuItem("120");
@@ -256,7 +256,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		}else if((e.getSource())==m2r1){
 			setFrame(1200,800);
 		}else if((e.getSource())==m2r2){
-			setFrame(800,600);
+			setFrame(900,600);
 		}else if(e.getSource()==m2s1){
 			setUps(120);
 		}else if(e.getSource()==m2s2){
