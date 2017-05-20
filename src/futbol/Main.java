@@ -40,7 +40,8 @@ public class Main extends Engine{
 	static byte arti2t=0;
 	Ai arti1;
 	Ai arti2;
-	ArrayList<Mutator> mutators=new ArrayList<>();
+	static ArrayList<Mutator> mutators=new ArrayList<>();
+	static ArrayList<Mutator> mutatorsToRemove=new ArrayList<>();
 
 
 	private Main(){
@@ -120,12 +121,12 @@ public class Main extends Engine{
 		super.initialize();
 		reset();
 		for(String s:variables)System.out.println(s);
-		new Timer(6000){
+		new Timer(13000){
 			@Override
 			public void run(){
 				while(run){
 					super.run();
-					mutators.add(new Mutator(1));
+					mutators.add(Mutator.createMutator(rng.nextInt(2)));
 				}
 			}
 		}.start(); //mutator
@@ -141,7 +142,7 @@ public class Main extends Engine{
 						if(goal)d.color=Direk.defColor;
 						}}.start();
 				ball.hit(d);
-			}
+			}for(Mutator m:mutators)if(distance(d,m)<=(d.radius+m.radius))m.hit(d);
 		}
 		if(arti1t>0)arti1.run();
 		if(arti2t>0)arti2.run();
@@ -172,7 +173,17 @@ public class Main extends Engine{
 			p.move();
 		}
 		ball.move();
-		for(Mutator m:mutators)m.move();
+		for(Mutator m:mutators){
+			m.move();
+			if(m.xPos>=1150&&goal){
+			m.activate(false);
+			}else if(m.xPos<=50&&goal){
+			m.activate(true);
+			}
+		}
+		for(Mutator m:mutatorsToRemove){
+			mutators.remove(m);
+		}
 		if(ball.xPos>=1150&&goal){
 			score(true);
 		}else if(ball.xPos<=50&&goal){

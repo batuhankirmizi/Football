@@ -5,10 +5,10 @@ class Ball extends Circly{
 	double slowX=0;
 	double slowY=0;
 	double moveAngle;
-	int rtg;
-	int rbg;
-	int ltg;
-	int lbg;
+	static int rtg;
+	static int rbg;
+	static int ltg;
+	static int lbg;
 
 	Ball(){
 		xPos=Main.width/2;
