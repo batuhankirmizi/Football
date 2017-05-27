@@ -14,6 +14,6 @@ class Circly extends Circle{
 
 	void draw(Graphics g){
 		g.setColor(color);
-		g.fillOval(Engine.scaleX(xPos-radius),Engine.scaleY(yPos-radius),Engine.scaleSize(size),Engine.scaleSize(size));
+		g.fillOval(Main.engine.scaleX(xPos-radius),Main.engine.scaleY(yPos-radius),Main.engine.scaleSize(size),Main.engine.scaleSize(size));
 	}
 }

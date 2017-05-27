@@ -24,7 +24,7 @@ public class Main extends Engine{
 	static Direk blDirek;
 	static Direk trDirek;
 	static Direk brDirek;
-    private static boolean goal = true;
+    static boolean goal = true;
 	private static byte t1Score = 0;
 	private static byte t2Score = 0;
 	private JMenuItem m12;//reset
@@ -101,6 +101,10 @@ public class Main extends Engine{
 		}
 		
 		System.out.println("objects initialized");
+	}
+	void resolutions(){
+		resolutions.add("1200*800");
+		resolutions.add("900*600");
 	}
 
 	public static void main(String[] args){
@@ -376,6 +380,7 @@ public class Main extends Engine{
             p.xPos=i*400;
             p.yPos=400;
             i++;
+            p.setGoalSize(160);
         }
         ball.xPos=600;
         ball.yPos=400;

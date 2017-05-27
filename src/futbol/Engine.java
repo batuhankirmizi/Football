@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+
 public abstract class Engine extends JPanel implements KeyListener, ActionListener, ItemListener{
 	static boolean run=true;
 	static Engine engine;
@@ -19,7 +20,12 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private static short GAME_HERTZ=120;
 	static short width=1200;
 	static short height=800;
+	final short firstW;
+	final short firstH;
+	public float scaleX=width/1200;
+	public float scaleY=width/800;
 	static ArrayList<String> variables=new ArrayList<>();
+	static ArrayList<String> resolutions=new ArrayList<>();
 	private File sett;
 	private Scanner settings;
 	private Formatter f;
@@ -29,8 +35,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private JMenu menu2; //Engine
 	private JMenuItem m11; //reset
 	private JMenuItem m21; //Show stats
-	private JMenuItem m2r1; //1200*800
-	private JMenuItem m2r2; //900*600
+	private ArrayList<JMenuItem> resolutionObjs=new ArrayList<>();
 	private JMenuItem m2s1; //%100 speed
 	private JMenuItem m2s2; //%50 speed
 	private JMenuItem m2f1; //120 fps
@@ -42,8 +47,10 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private static double lastUpdateTime=System.nanoTime();
 	private static double lastRenderTime=System.nanoTime();
 	static Random rng=new Random();
+	String[] res={"10","10"};
 
 	Engine(){
+		engine=this;
 		variables.addAll(new ArrayList<String>(Arrays.asList("fps","ups")));
 
 		frame=new JFrame("Football");
@@ -60,6 +67,22 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		frame.setResizable(false);
 		JPanel contPane=new JPanel(new BorderLayout());
 
+		resolutions();  //abstact
+		for(String s : resolutions){
+			resolutionObjs.add(new JMenuItem(s));
+		}
+		res=resolutions.get(0).split("\\*");
+		firstW=(short)Integer.parseInt(res[0]);
+		firstH=(short)Integer.parseInt(res[1]);
+
+		System.out.println("first Width: "+firstW+" first height: "+firstH);
+
+		scaleX=width/firstW;
+		scaleY=height/firstH;
+
+		System.out.println("x scale: "+scaleX());
+		System.out.println("y scale: "+scaleY());
+
 		frame.setJMenuBar(menuBarimiz());
 		frame.setContentPane(contPane);
 		menuBar.setVisible(false);
@@ -71,10 +94,12 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		setBackground(Color.BLACK);
 		setFocusable(true);
 		requestFocusInWindow();
-		
+
 
 		System.out.println("sup created");
 	}
+
+
 	void run(){
 		initialize();
 
@@ -101,13 +126,13 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			if(System.nanoTime()-lastUpdateTime>TIME_BETWEEN_UPDATES){
 				gameCodes();
 				lastUpdateTime+=TIME_BETWEEN_UPDATES;
-                //lastUpdateTime+=System.nanoTime();
+				//lastUpdateTime+=System.nanoTime();
 				updateCount++;
-                if(System.nanoTime()-lastRenderTime>TARGET_TIME_BETWEEN_RENDERS){
-                    frame.repaint();
-                    frameCount++;
-                    lastRenderTime+=TARGET_TIME_BETWEEN_RENDERS;
-                }
+				if(System.nanoTime()-lastRenderTime>TARGET_TIME_BETWEEN_RENDERS){
+					frame.repaint();
+					frameCount++;
+					lastRenderTime+=TARGET_TIME_BETWEEN_RENDERS;
+				}
 			}
 
 			Thread.yield();
@@ -148,6 +173,8 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		}
 	}
 	void initialize(){
+		res=resolutionObjs.get(0).getText().split("\\*");
+		setFrame(Integer.parseInt(res[0]),Integer.parseInt(res[1]));
 		readSett();
 	}
 	public void saveConf() throws IllegalAccessException{
@@ -176,8 +203,21 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 
 	protected abstract void gameCodes();
 	protected abstract void reset();
+
+	/**
+	 * ?ref=new JMenuItem("?buttonName");
+	 * ?ref.addActionListener(this);
+	 * menu1.add(?ref);
+	 */
 	protected abstract void menuBar();
 	protected abstract void actions(ActionEvent e);
+
+	/**
+	 * add resolutions as:
+	 * resolutions.add("?width*?height")
+	 * reach resolution should be at same ratio
+	 */
+	abstract void resolutions();
 
 	private JMenuBar menuBarimiz(){
 		menuBar=new JMenuBar();
@@ -185,8 +225,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		menu2=new JMenu("Engine");
 		m11=new JMenuItem("Reset");
 		m21=new JMenuItem("Show Stats");
-		m2r1=new JMenuItem("1200*800");
-		m2r2=new JMenuItem("900*600");
 		m2s1=new JMenuItem("%100");
 		m2s2=new JMenuItem("%50");
 		m2f1=new JMenuItem("120");
@@ -194,8 +232,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		m2f3=new JMenuItem("30");
 		m21.addActionListener(this);
 		m11.addActionListener(this);
-		m2r1.addActionListener(this);
-		m2r2.addActionListener(this);
 		m2s1.addActionListener(this);
 		m2s2.addActionListener(this);
 		m2f1.addActionListener(this);
@@ -205,8 +241,10 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		menu2.add(m21);
 		menu2.addSeparator();
 		menu2.add("Resolution:");
-		menu2.add(m2r1);
-		menu2.add(m2r2);
+		for(JMenuItem i : resolutionObjs){
+			i.addActionListener(this);
+			menu2.add(i);
+		}
 		menu2.addSeparator();
 		menu2.add("Game speed:");
 		menu2.add(m2s1);
@@ -248,15 +286,21 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	}
 	public void actionPerformed(ActionEvent e){
 		System.out.println("pressed something");
+		for(JMenuItem source : resolutionObjs){
+			if((e.getSource())==source){
+				String[] res=source.getText().split("\\*");
+				setFrame(Integer.parseInt(res[0]),Integer.parseInt(res[1]));
+			}
+		}
 		if((e.getSource())==m21){
 			System.out.println("show stats");
 			showStats=!showStats;
 		}else if((e.getSource())==m11){
 			reset();
-		}else if((e.getSource())==m2r1){
+		/*}else if((e.getSource())==m2r1){
 			setFrame(1200,800);
 		}else if((e.getSource())==m2r2){
-			setFrame(900,600);
+			setFrame(900,600);*/
 		}else if(e.getSource()==m2s1){
 			setUps(120);
 		}else if(e.getSource()==m2s2){
@@ -268,35 +312,33 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		}else if(e.getSource()==m2f3){
 			setFps(30);
 		}else
-		actions(e);
+			actions(e);
 	}
 
 	public void itemStateChanged(ItemEvent e){
 		JMenuItem source=(JMenuItem)(e.getSource());
 	}
 	public static void main(){
-		System.out.println("engine class ran123");
+		System.out.println("you must run implemented class");
 	}
-	static float scaleX=width/1200;
-	static float scaleY=width/800;
-	public static double scaleX(){
-		return scaleX;
+	public static float scaleX(){
+		return engine.scaleX;
 	}
-	public static double scaleY(){
+	public float scaleY(){
 		return scaleY;
 	}
-	public static double scaleSize(){
+	public float scaleSize(){
 		return scaleX;
 	}
-	public static int scaleX(double a){
-		return (int)(a*width/1200);
+	public int scaleX(double a){
+		return (int)(a*width/firstW);
 	}
-	public static int scaleY(double a){
-		return (int)(a*height/800);
+	public int scaleY(double a){
+		return (int)(a*height/firstH);
 	}
-	public static int scaleSize(double a){
+	public int scaleSize(double a){
 		//return (int)(a*scaleX);
-		return (int)(a*width/1200);
+		return (int)(a*width/firstW);
 	}
 	public void setFps(int fps){
 		target_fps=(byte)fps;
@@ -314,5 +356,23 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		scaleX=width/1200;
 		scaleY=width/800;
 		frame.setSize(width+5,height+50);
+	}
+}
+
+class Timer extends Thread{
+	int time;
+	Timer(int miliseconds){
+		super();
+		this.time=miliseconds;
+	}
+
+	@Override
+	public void run(){
+		super.run();
+		try{
+			Thread.sleep(time);
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
 	}
 }

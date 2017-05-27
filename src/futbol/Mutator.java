@@ -55,14 +55,14 @@ class Mutator extends Ball{
 				new Timer(24000){
 					public void run(){
 						super.run();
-						player.setGoalSize(player.goalsize-60);}
+						if(Main.mutators.contains(this))player.setGoalSize(player.goalsize-60);}
 				}.start();
 			}else if(type==MutatorT.SHRINK_GOAL){
 				player.setGoalSize(player.goalsize-40);
 				new Timer(20000){
 					public void run(){
 						super.run();
-						player.setGoalSize(player.goalsize+40);}
+						if(Main.mutators.contains(this))player.setGoalSize(player.goalsize+40);}
 				}.start();
 			}
 		Main.mutatorsToRemove.add(this);

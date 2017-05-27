@@ -1,2 +1,4 @@
+fps=60
+ups=120
 name1=Aytaç
 name2=Gökçen
