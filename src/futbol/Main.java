@@ -1,18 +1,19 @@
 package futbol;
 
+import futbol.Engine.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 public class Main extends Engine{
 	static Player[] players;
 	static Player player1;
 	static Player player2;
-	static String name1="Batu";
-	static String name2="Aytac";
+	public static String name1="Batu";
+	public static String name2="Aytac";
 	static Ball ball;
 	static Shapes topBound;
 	static Shapes botBound;
@@ -102,7 +103,7 @@ public class Main extends Engine{
 		
 		System.out.println("objects initialized");
 	}
-	void resolutions(){
+	public void resolutions(){
 		resolutions.add("1200*800");
 		resolutions.add("900*600");
 	}
@@ -121,11 +122,11 @@ public class Main extends Engine{
 		return Math.sqrt(Math.abs((p1.xPos-p2.xPos)*(p1.xPos-p2.xPos)+(p1.yPos-p2.yPos)*(p1.yPos-p2.yPos)));
 	}
 
-	void initialize(){
+	public void initialize(){
 		super.initialize();
 		reset();
 		for(String s:variables)System.out.println(s);
-		new Timer(13000){
+		new TimedEvent(13000){
 			@Override
 			public void run(){
 				while(run){
@@ -140,7 +141,7 @@ public class Main extends Engine{
 		for(Direk d : Direk.direkler){
 			if(distance(d,ball)<=(d.radius+ball.radius)){
 				d.color=d.teamColor;
-				new Timer(200){
+				new TimedEvent(200){
 					public void run(){
 						super.run();
 						if(goal)d.color=Direk.defColor;
@@ -331,12 +332,12 @@ public class Main extends Engine{
 			if(arti2.rand)arti2.goTo((int)ball.xPos,(int)ball.yPos);
 		}else if(e.getKeyCode()=='N'){
 			arti2.goTo(rng.nextInt(1200),rng.nextInt(800));
-			new Timer(3000){public void run(){super.run();arti2.rand=true;}}.start();
+			new TimedEvent(3000){public void run(){super.run();arti2.rand=true;}}.start();
 		}else if(e.getKeyCode()=='Z'){
 			if(arti1.rand)arti1.goTo((int)ball.xPos,(int)ball.yPos);
 		}else if(e.getKeyCode()=='X'){
 			arti1.goTo(rng.nextInt(1200),rng.nextInt(800));
-			new Timer(3000){public void run(){super.run();arti1.rand=true;}}.start();
+			new TimedEvent(3000){public void run(){super.run();arti1.rand=true;}}.start();
 		}
 	}
 
@@ -407,6 +408,6 @@ public class Main extends Engine{
 			blDirek.color=players[0].color;
 			t2Score++;
 		}
-		new Timer(1500){public void run(){super.run();reset();}}.start();
+		new futbol.Engine.TimedEvent(1500){public void run(){super.run();reset();}}.start();
 	}
 }

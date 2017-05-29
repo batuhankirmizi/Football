@@ -1,5 +1,7 @@
 package futbol;
 
+import futbol.Engine.TimedEvent;
+
 import java.awt.*;
 
 class Mutator extends Ball{
@@ -52,14 +54,14 @@ class Mutator extends Ball{
 		}
 		if(type==MutatorT.EXTEND_GOAL){
 				player.setGoalSize(player.goalsize+60);
-				new Timer(24000){
+				new TimedEvent(24000){
 					public void run(){
 						super.run();
 						if(Main.mutators.contains(this))player.setGoalSize(player.goalsize-60);}
 				}.start();
 			}else if(type==MutatorT.SHRINK_GOAL){
 				player.setGoalSize(player.goalsize-40);
-				new Timer(20000){
+				new TimedEvent(20000){
 					public void run(){
 						super.run();
 						if(Main.mutators.contains(this))player.setGoalSize(player.goalsize+40);}
