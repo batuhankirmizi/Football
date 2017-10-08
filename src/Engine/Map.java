@@ -1,4 +1,4 @@
-package futbol.Engine;
+package Engine;
 
 public class Map{
 	long viewScale=100;

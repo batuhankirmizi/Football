@@ -1,6 +1,6 @@
 package futbol;
 
-import futbol.Engine.TimedEvent;
+import Engine.TimedEvent;
 
 import java.awt.*;
 

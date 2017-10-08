@@ -1,4 +1,4 @@
-package futbol.Engine;
+package Engine;
 /*0.1.0
 most stable and optimum version before modular Map implemention
  */
