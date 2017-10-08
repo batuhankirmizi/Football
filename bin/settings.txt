@@ -1,4 +1,4 @@
-fps=60
-ups=120
-name1=Aytaç
-name2=Gökçen
+fps=63
+ups=127
+name1=Batu
+name2=Aytac

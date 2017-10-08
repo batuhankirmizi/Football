@@ -89,14 +89,14 @@ public class Ai extends Thread{
 		*/
 		double dis=0;
 		if(Math.abs(yDes-player.yPos)>Math.abs(xDes-player.xPos)){
-			int g=Math.abs(player.i);
-			for(int f=Math.abs(player.j);f>0;f-=Player.decrement){
-			    if(g>Player.decrement)g-=Player.decrement;
+			long g=Math.abs(player.i);
+			for(long f=Math.abs(player.j); f>0; f-=Player.decrement){
+				if(g>Player.decrement)g-=Player.decrement;
 			    else g=0;
 			    dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(g*Math.PI/500);
 			}
-		}
-		else for(int f=Math.abs(player.j);f>0;f-=Player.decrement)dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(player.i*Math.PI/500);
+		}else for(long f=Math.abs(player.j); f>0; f-=Player.decrement)
+			dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(player.i*Math.PI/500);
 		return dis;
 	}
 	double surplusX(){
@@ -106,14 +106,14 @@ public class Ai extends Thread{
 		*/
 		double dis=0;
 		if(Math.abs(xDes-player.xPos)>Math.abs(yDes-player.yPos)){
-			int g=Math.abs(player.j);
-			for(int f=Math.abs(player.i);f>0;f-=Player.decrement){
+			long g=Math.abs(player.j);
+			for(long f=Math.abs(player.i); f>0; f-=Player.decrement){
 			if(g>Player.decrement)g-=Player.decrement;
 			else g=0;
 			dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(g*Math.PI/500);
 			}
-		}
-		else for(int f=Math.abs(player.i);f>0;f-=Player.decrement)dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(player.j*Math.PI/500);
+		}else for(long f=Math.abs(player.i); f>0; f-=Player.decrement)
+			dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(player.j*Math.PI/500);
 		return dis;
 	}
 	double getYSpeed(){

@@ -1,11 +1,12 @@
 package futbol;
 
 import javafx.scene.shape.Circle;
+
 import java.awt.*;
 
 class Circly extends Circle{
-	double xPos;
-	double yPos;
+	double xPos=0;
+	double yPos=0;
 	double xSpeed=0;
 	double ySpeed=0;
 	byte radius;
@@ -14,6 +15,6 @@ class Circly extends Circle{
 
 	void draw(Graphics g){
 		g.setColor(color);
-		g.fillOval(Main.engine.scaleX(xPos-radius),Main.engine.scaleY(yPos-radius),Main.engine.scaleSize(size),Main.engine.scaleSize(size));
+		g.fillOval(Main.engine.scaleX(xPos-radius), Main.engine.scaleY(yPos-radius), Main.engine.scaleX(size), Main.engine.scaleY(size));
 	}
 }

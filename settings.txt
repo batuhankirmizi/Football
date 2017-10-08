@@ -1,4 +1,4 @@
-fps=60
-ups=120
+fps=58
+ups=116
 name1=Batu
 name2=Aytac

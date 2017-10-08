@@ -4,14 +4,14 @@ import java.awt.*;
 import java.util.ArrayList;
 
 class Player extends Circly{
-	byte SPEED=6;
+	long SPEED=6;
 	private String name;
-	byte i=0;
-	byte j=0;
-	short up;
-	short down;
-	short left;
-	short right;
+	long i=0;
+	long j=0;
+	int up;
+	int down;
+	int left;
+	int right;
 	Player enem;
     static final byte decrement=2;
 	static final byte increment=3;
