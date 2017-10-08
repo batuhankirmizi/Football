@@ -1,7 +1,6 @@
 package Engine;
 
 public class Map{
-	long viewScale=100;
-	long width, height;
+	long width=100, height=100;
 	Unit[] staticUnits;
 }

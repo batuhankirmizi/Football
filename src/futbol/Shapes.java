@@ -12,6 +12,6 @@ class Shapes extends Rectangle{
 
 	void draw(Graphics g){
 		g.setColor(Color.WHITE);
-		g.fillRect(Main.engine.scaleX(x), Main.engine.scaleY(y), Main.engine.scaleX(width), Main.engine.scaleY(height));
+		g.fillRect(Main.engine.scaleX(x), Main.engine.scaleY(y), Main.engine.scaleSizeX(width), Main.engine.scaleSizeY(height));
 	}
 }

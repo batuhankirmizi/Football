@@ -37,6 +37,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private long updateCount=0;
 	private float scaleX=width/1200;
 	private float scaleY=width/800;
+	int topInset, rightInset;
 
 	protected static ArrayList<String> variables=new ArrayList<>();
 	private String[] res={"10", "10"};
@@ -57,6 +58,9 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public static Random rng=new Random();
 	private ArrayList<Text> texts=new ArrayList<>();
 
+	Map map=new Map();
+	Camera camera=new Camera(0, 0);
+
 	public Engine(){
 		engine=this;
 		variables.addAll(new ArrayList<>(Arrays.asList("fps", "ups")));
@@ -75,6 +79,11 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		frame.setResizable(false);
 		JPanel contPane=new JPanel(new BorderLayout());
 
+
+		frame.pack();
+		topInset=frame.getInsets().top+frame.getInsets().bottom;
+		rightInset=frame.getInsets().right+frame.getInsets().left;
+
 		resolutions();  //abstact
 		for(String s : resolutions){
 			resolutionObjs.add(new JMenuItem(s));
@@ -88,8 +97,8 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		scaleX=width/firstW;
 		scaleY=height/firstH;
 
-		System.out.println("x scale: "+scaleX());
-		System.out.println("y scale: "+scaleY());
+		//System.out.println("x scale: "+scaleX());
+		//System.out.println("y scale: "+scaleY());
 
 		frame.setJMenuBar(menuBarimiz());
 		frame.setContentPane(contPane);
@@ -299,7 +308,12 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 				menuBar.setVisible(false);
 				setFrame(width-1, height-menuBar.getHeight());
 			}
-		}
+		}else if(a==KeyEvent.VK_NUMPAD6) camera.move(2, 0);
+		else if(a==KeyEvent.VK_NUMPAD4) camera.move(-2, 0);
+		else if(a==KeyEvent.VK_NUMPAD8) camera.move(0, -2);
+		else if(a==KeyEvent.VK_NUMPAD2) camera.move(0, 2);
+		else if(a==KeyEvent.VK_NUMPAD9) camera.chanceScale(0.04f);
+		else if(a==KeyEvent.VK_NUMPAD3) camera.chanceScale(-0.04f);
 	}
 
 	public void keyReleased(KeyEvent e){
@@ -350,15 +364,27 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public float scaleSize(){
 		return scaleX;
 	}
+
+	public int scaleSizeX(double a){
+		return (int) (a*scaleX);
+	}
+
+	public int scaleSizeY(double a){
+		return (int) (a*scaleY);
+	}
 	public int scaleX(double a){
-		return (int)(a*width/firstW);
+		return (int) ((a-camera.xPos)*scaleX);
 	}
 	public int scaleY(double a){
-		if(menuBar.isVisible()) return (int) (a*(height-menuBar.getHeight())/firstH);
-		return (int)(a*height/firstH);
+		return (int) ((a-camera.yPos)*scaleY);
 	}
-	public int scaleSize(double a){
-		return (int) (a*height/firstH);
+
+	public void updateScales(){
+		if(menuBar.isVisible()) scaleY=(height-menuBar.getHeight()-topInset)/(firstH*camera.viewScale);
+		else scaleY=height/(firstH*camera.viewScale);
+
+		if(menuBar.isVisible()) scaleX=(width-1)/(firstW*camera.viewScale);
+		else scaleX=width/(firstW*camera.viewScale);
 	}
 
 	private void setFps(long fps){
@@ -376,10 +402,9 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private void setFrame(int x, int y){
 		width=x;
 		height=y;
-		scaleX=width/1200;
-		scaleY=width/800;
-		frame.setSize(width, height);
-		frame.revalidate();
+		frame.setSize(width+rightInset, height+topInset);
+		updateScales();
+
 	}
 
 	public void addText(String text, int xpos, int ypos){
