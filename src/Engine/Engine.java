@@ -22,12 +22,12 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public static int width=1200;
 	public static int height=800;
 	protected static ArrayList<String> resolutions=new ArrayList<>();
+	private static float lastUpdateTime=System.nanoTime();
 	private static long GAME_HERTZ=128;
-	protected final JFrame frame;
 	private static float TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
 	static private long target_fps=64;
 	private static float TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
-	private static float lastUpdateTime=0;
+	protected final JFrame frame;
 	private static float lastRenderTime=0;
 	private final long firstW;
 	private final long firstH;
@@ -37,14 +37,13 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private long updateCount=0;
 	private float scaleX=width/1200;
 	private float scaleY=width/800;
-	int topInset, rightInset;
+	private int topInset, rightInset;
 
 	protected static ArrayList<String> variables=new ArrayList<>();
 	private String[] res={"10", "10"};
 
 	private JMenuBar menuBar;
 	protected JMenu menu1; //Game
-	private JMenu menu2; //Engine.Engine
 	private JMenuItem m11; //reset
 	private JMenuItem m21; //Show stats
 	private ArrayList<JMenuItem> resolutionObjs=new ArrayList<>();
@@ -62,6 +61,8 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	Camera camera=new Camera(0, 0);
 
 	public Engine(){
+		System.setProperty("sun.java2d.opengl", "true");
+
 		engine=this;
 		variables.addAll(new ArrayList<>(Arrays.asList("fps", "ups")));
 
@@ -78,6 +79,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		});
 		frame.setResizable(false);
 		JPanel contPane=new JPanel(new BorderLayout());
+		System.out.println(frame.getGraphicsConfiguration().getBufferCapabilities().isPageFlipping());
 
 
 		frame.pack();
@@ -118,50 +120,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 
 	private static float scaleX(){
 		return engine.scaleX;
-	}
-
-	public void run(){
-		initialize();
-
-		frame.add(this);
-		frame.setVisible(true);
-
-		new TimedEvent(1000){
-			@Override
-			public void run(){
-				while(run){
-					super.run();
-					ups=updateCount;
-					updateCount=0;
-					fps=frameCount;
-					frameCount=0;
-				}
-			}
-		}.start(); //fps and ups updater
-		// Game loop
-		while(run){
-			if(System.nanoTime()-lastUpdateTime>TIME_BETWEEN_UPDATES){
-				lastUpdateTime=System.nanoTime();
-				gameCodes();
-				updateCount++;
-				if(System.nanoTime()-lastRenderTime>TARGET_TIME_BETWEEN_RENDERS){
-					lastRenderTime=lastUpdateTime;
-					frame.repaint();
-					frameCount++;
-				}
-			}
-
-			/*Thread.yield();
-			try{
-				Thread.sleep(0,5);
-			}catch(Exception ignored){
-			}*/
-		}
-		try{
-			saveConf();
-		}catch(IllegalAccessException e){
-			e.printStackTrace();
-		}
 	}
 
 	public void initialize(){
@@ -254,44 +212,49 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 
 	public void keyTyped(KeyEvent e){}
 
-	private JMenuBar menuBarimiz(){
-		menuBar=new JMenuBar();
-		menu1=new JMenu("Game");
-		menu2=new JMenu("Engine");
-		m11=new JMenuItem("Reset");
-		m21=new JMenuItem("Show Stats");
-		m2s1=new JMenuItem("%100");
-		m2s2=new JMenuItem("%50");
-		m2f1=new JMenuItem("128");
-		m2f2=new JMenuItem("64");
-		m2f3=new JMenuItem("32");
-		m21.addActionListener(this);
-		m11.addActionListener(this);
-		m2s1.addActionListener(this);
-		m2s2.addActionListener(this);
-		m2f1.addActionListener(this);
-		m2f2.addActionListener(this);
-		m2f3.addActionListener(this);
-		menu1.add(m11);
-		menu2.add(m21);
-		menu2.addSeparator();
-		menu2.add("Resolution:");
-		for(JMenuItem i : resolutionObjs){
-			i.addActionListener(this);
-			menu2.add(i);
+	public void run(){
+		initialize();
+
+		frame.add(this);
+		frame.setVisible(true);
+
+		new TimedEvent(500){
+			@Override
+			public void run(){
+				while(run){
+					super.run();
+					ups=updateCount*2;
+					updateCount=0;
+					fps=frameCount*2;
+					frameCount=0;
+					getGraphics().dispose();
+				}
+			}
+		}.start(); //fps and ups updater
+		// Game loop
+		while(run){
+			if(System.nanoTime()-lastUpdateTime>=TIME_BETWEEN_UPDATES){
+				lastUpdateTime=System.nanoTime();
+				gameCodes();
+				updateCount++;
+				if(System.nanoTime()-lastRenderTime>=TARGET_TIME_BETWEEN_RENDERS){
+					lastRenderTime=lastUpdateTime;
+					frame.repaint();
+					frameCount++;
+				}
+			}
+
+			Thread.yield();
+			try{
+				Thread.sleep(1, 0);
+			}catch(Exception ignored){
+			}
 		}
-		menu2.addSeparator();
-		menu2.add("Game speed:");
-		menu2.add(m2s1);
-		menu2.add(m2s2);
-		menu2.add("FPS:");
-		menu2.add(m2f1);
-		menu2.add(m2f2);
-		menu2.add(m2f3);
-		menuBar.add(menu1);
-		menuBar.add(menu2);
-		menuBar();
-		return menuBar;
+		try{
+			saveConf();
+		}catch(IllegalAccessException e){
+			e.printStackTrace();
+		}
 	}
 
 	public void keyPressed(KeyEvent e){
@@ -358,6 +321,45 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		}else actions(e);
 	}
 
+	private JMenuBar menuBarimiz(){
+		menuBar=new JMenuBar();
+		menu1=new JMenu("Game");
+		JMenu menu2=new JMenu("Engine");
+		m11=new JMenuItem("Reset");
+		m21=new JMenuItem("Show Stats");
+		m2s1=new JMenuItem("%100");
+		m2s2=new JMenuItem("%50");
+		m2f1=new JMenuItem("128");
+		m2f2=new JMenuItem("64");
+		m2f3=new JMenuItem("32");
+		m21.addActionListener(this);
+		m11.addActionListener(this);
+		m2s1.addActionListener(this);
+		m2s2.addActionListener(this);
+		m2f1.addActionListener(this);
+		m2f2.addActionListener(this);
+		m2f3.addActionListener(this);
+		menu1.add(m11);
+		menu2.add(m21);
+		menu2.addSeparator();
+		menu2.add("Resolution:");
+		for(JMenuItem i : resolutionObjs){
+			i.addActionListener(this);
+			menu2.add(i);
+		}
+		menu2.addSeparator();
+		menu2.add("Game speed:");
+		menu2.add(m2s1);
+		menu2.add(m2s2);
+		menu2.add("FPS:");
+		menu2.add(m2f1);
+		menu2.add(m2f2);
+		menu2.add(m2f3);
+		menuBar.add(menu1);
+		menuBar.add(menu2);
+		menuBar();
+		return menuBar;
+	}
 	private float scaleY(){
 		return scaleY;
 	}
@@ -368,7 +370,6 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public int scaleSizeX(double a){
 		return (int) (a*scaleX);
 	}
-
 	public int scaleSizeY(double a){
 		return (int) (a*scaleY);
 	}
