@@ -89,13 +89,13 @@ public class Ai extends Thread{
 		*/
 		double dis=0;
 		if(Math.abs(yDes-player.yPos)>Math.abs(xDes-player.xPos)){
-			long g=Math.abs(player.i);
-			for(long f=Math.abs(player.j); f>0; f-=Player.decrement){
+			double g=Math.abs(player.i);
+			for(double f=Math.abs(player.j); f>0; f-=Player.decrement){
 				if(g>Player.decrement)g-=Player.decrement;
 			    else g=0;
 			    dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(g*Math.PI/500);
 			}
-		}else for(long f=Math.abs(player.j); f>0; f-=Player.decrement)
+		}else for(double f=Math.abs(player.j); f>0; f-=Player.decrement)
 			dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(player.i*Math.PI/500);
 		return dis;
 	}
@@ -106,13 +106,13 @@ public class Ai extends Thread{
 		*/
 		double dis=0;
 		if(Math.abs(xDes-player.xPos)>Math.abs(yDes-player.yPos)){
-			long g=Math.abs(player.j);
-			for(long f=Math.abs(player.i); f>0; f-=Player.decrement){
+			double g=Math.abs(player.j);
+			for(double f=Math.abs(player.i); f>0; f-=Player.decrement){
 			if(g>Player.decrement)g-=Player.decrement;
 			else g=0;
 			dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(g*Math.PI/500);
 			}
-		}else for(long f=Math.abs(player.i); f>0; f-=Player.decrement)
+		}else for(double f=Math.abs(player.i); f>0; f-=Player.decrement)
 			dis+=player.SPEED*Math.sin(f*Math.PI/250)*Math.cos(player.j*Math.PI/500);
 		return dis;
 	}

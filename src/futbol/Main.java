@@ -162,21 +162,7 @@ public class Main extends Engine{
 					m.hit(p);
 				}
 			}
-			//keylisten
-			if(pressed.contains(p.up)&&!pressed.contains(p.down))
-				if(p.j>-(125-Player.increment)) p.j-=Player.increment;
-				else p.j=-125;
-			else if(pressed.contains(p.down)&&!pressed.contains(p.up))
-				if(p.j<(125-Player.increment)) p.j+=Player.increment;
-				else p.j=125;
 
-			if(pressed.contains(p.left)&&!pressed.contains(p.right))
-				if(p.i>-(125-Player.increment)) p.i-=Player.increment;
-				else p.i=-125;
-			else if(pressed.contains(p.right)&&!pressed.contains(p.left))
-				if(p.i<(125-Player.increment)) p.i+=Player.increment;
-				else p.i=125;
-		
 			p.move();
 		}
 		ball.move();

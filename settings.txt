@@ -1,0 +1,4 @@
+fps=52
+ups=52
+name1=Batu
+name2=Aytac

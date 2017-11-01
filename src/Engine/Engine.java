@@ -19,25 +19,30 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	protected static boolean run=true;
 	public static Engine engine;
 	public final static Set<Integer> pressed=new TreeSet<>();
+
 	public static int width=1200;
 	public static int height=800;
+	static final double maxDelta=0.02091;    //as seconds
+	public static double delta=0;    //as seconds
+	static int sleepTime=0;    //as miliseconds, dynamically change for code intensity
 	protected static ArrayList<String> resolutions=new ArrayList<>();
-	private static float lastUpdateTime=System.nanoTime();
-	private static long GAME_HERTZ=128;
-	private static float TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
-	static private long target_fps=64;
-	private static float TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 	protected final JFrame frame;
-	private static float lastRenderTime=0;
-	private final long firstW;
-	private final long firstH;
-	public long fps=0;
-	public long ups=0;
-	private long frameCount=0;
-	private long updateCount=0;
-	private float scaleX=width/1200;
-	private float scaleY=width/800;
+	private static long lastUpdateTime=System.nanoTime();
+	private static long previousUpdateTime=System.nanoTime();
+	private static int GAME_HERTZ=128;
+	private static long TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
+	static private int target_fps=64;
+	private static long TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
+	private static long lastRenderTime=0;
+	private final int firstW;
+	private final int firstH;
+	public int fps=0;
+	public int ups=0;
+	private double scaleX=width/1200;
+	private double scaleY=width/800;
 	private int topInset, rightInset;
+	private int frameCount=0;
+	private int updateCount=0;
 
 	protected static ArrayList<String> variables=new ArrayList<>();
 	private String[] res={"10", "10"};
@@ -47,8 +52,9 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private JMenuItem m11; //reset
 	private JMenuItem m21; //Show stats
 	private ArrayList<JMenuItem> resolutionObjs=new ArrayList<>();
-	private JMenuItem m2s1; //%100 speed
-	private JMenuItem m2s2; //%50 speed
+	private JMenuItem m2s1; //128Hz speed
+	private JMenuItem m2s2; //64Hz speed
+	private JMenuItem m2s3; //48Hz speed
 	private JMenuItem m2f1; //128 fps
 	private JMenuItem m2f2; //64 fps
 	private JMenuItem m2f3; //32 fps
@@ -118,7 +124,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		System.out.println("sup created");
 	}
 
-	private static float scaleX(){
+	private static double scaleX(){
 		return engine.scaleX;
 	}
 
@@ -174,7 +180,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	/**
 	 * add resolutions as:
 	 * resolutions.add("?width*?height")
-	 * reach resolution should be at same ratio
+	 * each resolution should be at same ratio
 	 */
 	public abstract void resolutions();
 
@@ -234,20 +240,27 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		// Game loop
 		while(run){
 			if(System.nanoTime()-lastUpdateTime>=TIME_BETWEEN_UPDATES){
+				if(delta>maxDelta){
+					System.out.println("latency detected "+delta);
+					delta=maxDelta;
+				}
+				previousUpdateTime=lastUpdateTime;
 				lastUpdateTime=System.nanoTime();
 				gameCodes();
+				delta=(System.nanoTime()-(double) previousUpdateTime)/1000000000;
 				updateCount++;
 				if(System.nanoTime()-lastRenderTime>=TARGET_TIME_BETWEEN_RENDERS){
 					lastRenderTime=lastUpdateTime;
 					frame.repaint();
 					frameCount++;
 				}
-			}
 
-			Thread.yield();
-			try{
-				Thread.sleep(1, 0);
-			}catch(Exception ignored){
+				//sleepTime=(int)TIME_BETWEEN_UPDATES/1000000;
+				sleepTime=(int) (TIME_BETWEEN_UPDATES*2/1000000-delta*1000);
+				try{
+					Thread.sleep(sleepTime, 0);
+				}catch(Exception ignored){
+				}
 			}
 		}
 		try{
@@ -312,12 +325,14 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			setUps(128);
 		}else if(e.getSource()==m2s2){
 			setUps(64);
+		}else if(e.getSource()==m2s3){
+			setUps(52);
 		}else if(e.getSource()==m2f1){
 			setFps(128);
 		}else if(e.getSource()==m2f2){
 			setFps(64);
 		}else if(e.getSource()==m2f3){
-			setFps(32);
+			setFps(52);
 		}else actions(e);
 	}
 
@@ -327,15 +342,17 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		JMenu menu2=new JMenu("Engine");
 		m11=new JMenuItem("Reset");
 		m21=new JMenuItem("Show Stats");
-		m2s1=new JMenuItem("%100");
-		m2s2=new JMenuItem("%50");
+		m2s1=new JMenuItem("128Hz");
+		m2s2=new JMenuItem("64Hz");
+		m2s3=new JMenuItem("50Hz");
 		m2f1=new JMenuItem("128");
 		m2f2=new JMenuItem("64");
-		m2f3=new JMenuItem("32");
+		m2f3=new JMenuItem("50");
 		m21.addActionListener(this);
 		m11.addActionListener(this);
 		m2s1.addActionListener(this);
 		m2s2.addActionListener(this);
+		m2s3.addActionListener(this);
 		m2f1.addActionListener(this);
 		m2f2.addActionListener(this);
 		m2f3.addActionListener(this);
@@ -351,6 +368,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		menu2.add("Game speed:");
 		menu2.add(m2s1);
 		menu2.add(m2s2);
+		menu2.add(m2s3);
 		menu2.add("FPS:");
 		menu2.add(m2f1);
 		menu2.add(m2f2);
@@ -360,10 +378,12 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		menuBar();
 		return menuBar;
 	}
-	private float scaleY(){
+
+	private double scaleY(){
 		return scaleY;
 	}
-	public float scaleSize(){
+
+	public double scaleSize(){
 		return scaleX;
 	}
 
@@ -388,16 +408,17 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		else scaleX=width/(firstW*camera.viewScale);
 	}
 
-	private void setFps(long fps){
+	private void setFps(int fps){
 		target_fps=fps;
 		TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 		System.out.println(fps+" fps");
 	}
 
-	private void setUps(long ups){
+	private void setUps(int ups){
 		GAME_HERTZ=ups;
 		TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
 		System.out.println(ups+" ups");
+		System.out.println("wait time: "+TIME_BETWEEN_UPDATES);
 	}
 
 	private void setFrame(int x, int y){

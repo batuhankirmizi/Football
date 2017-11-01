@@ -4,17 +4,17 @@ import java.awt.*;
 import java.util.ArrayList;
 
 class Player extends Circly{
-	long SPEED=6;
+	static final double decrement=2/0.008;
 	private String name;
-	long i=0;
-	long j=0;
+	static final double increment=3/0.008;
+	double SPEED=6/0.008;
 	int up;
 	int down;
 	int left;
 	int right;
 	Player enem;
-    static final byte decrement=2;
-	static final byte increment=3;
+	double i=0;
+	double j=0;
 	boolean botted;
 	Ai bot;
     private final boolean leftT;
@@ -33,9 +33,25 @@ class Player extends Circly{
 	}
 
 	void move(){
+		//keylisten
+		if(Main.pressed.contains(up)&&!Main.pressed.contains(down))
+			if(j>-(125-Player.increment*Main.delta)) j-=Player.increment*Main.delta;
+			else j=-125;
+		else if(Main.pressed.contains(down)&&!Main.pressed.contains(up))
+			if(j<(125-Player.increment*Main.delta)) j+=Player.increment*Main.delta;
+			else j=125;
+
+		if(Main.pressed.contains(left)&&!Main.pressed.contains(right))
+			if(i>-(125-Player.increment*Main.delta)) i-=Player.increment*Main.delta;
+			else i=-125;
+		else if(Main.pressed.contains(right)&&!Main.pressed.contains(left))
+			if(i<(125-Player.increment*Main.delta)) i+=Player.increment*Main.delta;
+			else i=125;
+
+
 		//set player speed
-		xSpeed=SPEED*Math.sin(i*Math.PI/250)*Math.cos(j*Math.PI/500);
-		ySpeed=SPEED*Math.sin(j*Math.PI/250)*Math.cos(i*Math.PI/500);
+		xSpeed=SPEED*Math.sin(i*Math.PI/250)*Math.cos(j*Math.PI/500)*Main.delta;
+		ySpeed=SPEED*Math.sin(j*Math.PI/250)*Math.cos(i*Math.PI/500)*Main.delta;
 
         if(ySpeed<0&&yPos+ySpeed<radius) yPos=radius;
 		else if(ySpeed>0&&yPos+ySpeed>800-radius) yPos=800-radius;
@@ -82,11 +98,11 @@ class Player extends Circly{
 			}
 		}
 		//slow player
-		if(i>decrement) i-=decrement;
-		else if(i<-decrement) i+=decrement;
+		if(i>decrement*Main.delta) i-=decrement*Main.delta;
+		else if(i<-decrement*Main.delta) i+=decrement*Main.delta;
 		else i=0;
-		if(j>Player.decrement) j-=decrement;
-		else if(j<-decrement) j+=decrement;
+		if(j>Player.decrement*Main.delta) j-=decrement*Main.delta;
+		else if(j<-decrement*Main.delta) j+=decrement*Main.delta;
 		else j=0;
 	}
 
