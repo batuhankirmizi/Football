@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="glg2d">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/glg2d-0.3-20130222.215441-2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/glg2d-0.3-20130222.215441-2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

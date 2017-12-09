@@ -10,5 +10,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="gluegen-rt" level="project" />
+    <orderEntry type="library" exported="" name="jogl-all" level="project" />
+    <orderEntry type="library" exported="" name="glg2d-0.5-SNAPSHOT" level="project" />
   </component>
 </module>

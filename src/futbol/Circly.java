@@ -1,10 +1,8 @@
 package futbol;
 
-import javafx.scene.shape.Circle;
-
 import java.awt.*;
 
-class Circly extends Circle{
+class Circly{
 	double xPos=0;
 	double yPos=0;
 	double xSpeed=0;

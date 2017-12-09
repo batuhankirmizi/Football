@@ -1,6 +1,6 @@
 package Engine;
-/*0.1.0
-most stable and optimum version before modular Map implemention
+/*0.1.1
+
  */
 
 import javax.swing.*;
@@ -25,8 +25,9 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	static final double maxDelta=0.02091;    //as seconds
 	public static double delta=0;    //as seconds
 	static int sleepTime=0;    //as miliseconds, dynamically change for code intensity
-	protected static ArrayList<String> resolutions=new ArrayList<>();
+
 	protected final JFrame frame;
+
 	private static long lastUpdateTime=System.nanoTime();
 	private static long previousUpdateTime=System.nanoTime();
 	private static int GAME_HERTZ=128;
@@ -44,6 +45,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private int frameCount=0;
 	private int updateCount=0;
 
+	protected static ArrayList<String> resolutions=new ArrayList<>();
 	protected static ArrayList<String> variables=new ArrayList<>();
 	private String[] res={"10", "10"};
 
@@ -109,7 +111,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		//System.out.println("y scale: "+scaleY());
 
 		frame.setJMenuBar(menuBarimiz());
-		frame.setContentPane(contPane);
+		frame.setContentPane(contPane);    //TODO
 		menuBar.setVisible(false);
 
 		setLayout(null);
@@ -134,7 +136,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		readSett();
 	}
 
-	private void readSett(){
+	private void readSett(){//TODO
 		System.out.println("reading settings");
 		try{
 			List<String> readSettings=Files.readAllLines(Paths.get("settings.txt"));
@@ -221,8 +223,12 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public void run(){
 		initialize();
 
+
+		/*GLCanvas.getDrawableComponent().add(this);
+		GLCanvas.setVisible(true);*/
 		frame.add(this);
 		frame.setVisible(true);
+
 
 		new TimedEvent(500){
 			@Override
@@ -238,6 +244,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			}
 		}.start(); //fps and ups updater
 		// Game loop
+		//GLCanvas.paint(getGraphics());
 		while(run){
 			if(System.nanoTime()-lastUpdateTime>=TIME_BETWEEN_UPDATES){
 				if(delta>maxDelta){
@@ -247,16 +254,19 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 				previousUpdateTime=lastUpdateTime;
 				lastUpdateTime=System.nanoTime();
 				gameCodes();
-				delta=(System.nanoTime()-(double) previousUpdateTime)/1000000000;
+				//delta=(System.nanoTime()-(double) previousUpdateTime)/1000000000;
 				updateCount++;
 				if(System.nanoTime()-lastRenderTime>=TARGET_TIME_BETWEEN_RENDERS){
 					lastRenderTime=lastUpdateTime;
 					frame.repaint();
+					//GLCanvas.paint(getGraphics());
 					frameCount++;
 				}
+				delta=(System.nanoTime()-(double) previousUpdateTime)/1000000000;
 
 				//sleepTime=(int)TIME_BETWEEN_UPDATES/1000000;
 				sleepTime=(int) (TIME_BETWEEN_UPDATES*2/1000000-delta*1000);
+				if(sleepTime>20) sleepTime=19;
 				try{
 					Thread.sleep(sleepTime, 0);
 				}catch(Exception ignored){
